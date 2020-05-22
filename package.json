@@ -1,0 +1,36 @@
+{
+  "name": "dnd-web-buddy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./server/index.js",
+    "watch": "babel --watch ./client/js --out-file ./client/hosted/bundle.js",
+    "nodemon": "nodemon --watch ./server ./server/index.js",
+    "cstart": "concurrently \"npm:nodemon\" \"npm:watch\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nxg9997/DnD-Web-Buddy.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nxg9997/DnD-Web-Buddy/issues"
+  },
+  "homepage": "https://github.com/nxg9997/DnD-Web-Buddy#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "concurrently": "^5.2.0",
+    "nodemon": "^2.0.4",
+    "socket.io-client": "^2.3.0"
+  }
+}

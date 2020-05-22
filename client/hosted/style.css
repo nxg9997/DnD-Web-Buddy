@@ -1,0 +1,23 @@
+body {
+    background: grey;
+}
+
+.center-text {
+    text-align: center;
+}
+
+.display-flex {
+    display: flex;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.small-margin {
+    margin: 5px;
+}
+
+.black-border {
+    border: 2px solid black;
+}

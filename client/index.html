@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>DnD Web Buddy</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+
+    <link rel="stylesheet" href="/hosted/style.css">
+</head>
+<body>
+    <div id="app">
+        <div class="demo-layout-transparent mdl-layout mdl-js-layout">
+            <header class="mdl-layout__header mdl-layout__header--transparent">
+              <div class="mdl-layout__header-row">
+                <!-- Title -->
+                <span class="mdl-layout-title">{{title}}</span>
+                <!-- Add spacer, to align navigation to the right -->
+                <div class="mdl-layout-spacer"></div>
+                <!-- Navigation >
+                <nav class="mdl-navigation">
+                  <a class="mdl-navigation__link" href="">Link</a>
+                  <a class="mdl-navigation__link" href="">Link</a>
+                  <a class="mdl-navigation__link" href="">Link</a>
+                  <a class="mdl-navigation__link" href="">Link</a>
+                </nav-->
+              </div>
+            </header>
+            <div class="mdl-layout__drawer">
+              <span class="mdl-layout-title">{{title}}</span>
+              <nav class="mdl-navigation">
+                <a v-for="link in links" class="mdl-navigation__link" v-bind:href="link.href">{{link.label}}</a>
+              </nav>
+            </div>
+            <main class="mdl-layout__content">
+                <div class="mdl-grid">
+                    <div class="mdl-cell--12-col">
+                        <h1 class="center-text">DnD - Stat Tracker</h1>
+                    </div>
+                    <div class="mdl-cell--12-col mdl-grid">
+                        <div class="mdl-layout-spacer"></div>
+                        <div class="mdl-cell--3-col small-margin">
+                            <input class="full-width" type="text" placeholder="roomID"/>
+                        </div>
+                        <div class="mdl-cell--3-col small-margin">
+                            <input class="full-width" type="text" placeholder="password"/>
+                        </div>
+                        <div class="mdl-cell--3-col small-margin">
+                            <button class="full-width" id="connectBtn">Connect!</button>
+                        </div>
+                        
+                        <div class="mdl-layout-spacer"></div>
+                        
+                    </div>
+                    <div class="mdl-cell--5-col mdl-grid black-border">
+                        <div class="mdl-layout-spacer"></div>
+                        <div class="mdl-cell--8-col">
+                            <form action="#">
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input class="mdl-textfield__input" type="text" id="p1name" v-model="stats.player1.name" v-on:change="emitChange">
+                                    <label class="mdl-textfield__label" for="p1name">Player 1</label>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="mdl-layout-spacer"></div>
+                    </div>
+                    <div class="mdl-cell--5-col mdl-grid black-border">
+                        <div class="mdl-layout-spacer"></div>
+                        <div class="mdl-cell--8-col">
+                            <form action="#">
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input class="mdl-textfield__input" type="text" id="p2name" v-model="stats.player2.name">
+                                    <label class="mdl-textfield__label" for="p2name">Player 2</label>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="mdl-layout-spacer"></div>
+                    </div>
+                </div>
+            </main>
+          </div>
+    </div>
+</body>
+<script src="/hosted/socket.js"></script>
+<script src="/hosted/bundle.js"></script>
+</html>
