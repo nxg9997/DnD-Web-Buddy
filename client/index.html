@@ -7,7 +7,7 @@
     <title>DnD Web Buddy</title>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.orange-cyan.min.css">
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
@@ -46,39 +46,121 @@
                     <div class="mdl-cell--12-col mdl-grid">
                         <div class="mdl-layout-spacer"></div>
                         <div class="mdl-cell--3-col small-margin">
-                            <input class="full-width" type="text" placeholder="roomID"/>
+                            <input class="full-width" type="text" placeholder="roomID" v-model="roomID" />
                         </div>
                         <div class="mdl-cell--3-col small-margin">
-                            <input class="full-width" type="text" placeholder="password"/>
-                        </div>
-                        <div class="mdl-cell--3-col small-margin">
-                            <button class="full-width" id="connectBtn">Connect!</button>
+                            <button class="full-width" id="connectBtn" v-on:click="changeRoom">Connect!</button>
                         </div>
                         
                         <div class="mdl-layout-spacer"></div>
                         
                     </div>
-                    <div class="mdl-cell--5-col mdl-grid black-border">
+                    <div class="mdl-cell--4-col mdl-grid black-border">
                         <div class="mdl-layout-spacer"></div>
                         <div class="mdl-cell--8-col">
-                            <form action="#">
-                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                    <input class="mdl-textfield__input" type="text" id="p1name" v-model="stats.player1.name" v-on:change="emitChange">
-                                    <label class="mdl-textfield__label" for="p1name">Player 1</label>
-                                </div>
-                            </form>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input" type="text" id="p1name" v-model="stats.player1.name" v-on:change="emitChange">
+                                <label class="mdl-textfield__label" for="p1name">Player 1</label>
+                            </div>
+
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="player1hp" v-model="stats.player1.hp" v-on:change="emitChange">
+                                <label class="mdl-textfield__label" for="player1hp">HP</label>
+                                <span class="mdl-textfield__error">Input is not a number!</span>
+                            </div>
+
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="player1atk" v-model="stats.player1.atk" v-on:change="emitChange">
+                                <label class="mdl-textfield__label" for="player1atk">Attack</label>
+                                <span class="mdl-textfield__error">Input is not a number!</span>
+                            </div>
+
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="player1def" v-model="stats.player1.def" v-on:change="emitChange">
+                                <label class="mdl-textfield__label" for="player1def">Defense</label>
+                                <span class="mdl-textfield__error">Input is not a number!</span>
+                            </div>
+
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="player1atkmult" v-model="stats.player1.atkMult" v-on:change="emitChange">
+                                <label class="mdl-textfield__label" for="player1atkmult">Attack Multiplier</label>
+                                <span class="mdl-textfield__error">Input is not a number!</span>
+                            </div>
+
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="player1defmult" v-model="stats.player1.defMult" v-on:change="emitChange">
+                                <label class="mdl-textfield__label" for="player1defmult">Defense Multiplier</label>
+                                <span class="mdl-textfield__error">Input is not a number!</span>
+                            </div>
+
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="player1extra" v-model="stats.player1.extraDmg" v-on:change="emitChange">
+                                <label class="mdl-textfield__label" for="player1extra">Additional Damage</label>
+                                <span class="mdl-textfield__error">Input is not a number!</span>
+                            </div>
                         </div>
                         <div class="mdl-layout-spacer"></div>
                     </div>
-                    <div class="mdl-cell--5-col mdl-grid black-border">
+                    <div class="mdl-cell--3-col mdl-grid black-border">
                         <div class="mdl-layout-spacer"></div>
                         <div class="mdl-cell--8-col">
-                            <form action="#">
-                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                    <input class="mdl-textfield__input" type="text" id="p2name" v-model="stats.player2.name">
-                                    <label class="mdl-textfield__label" for="p2name">Player 2</label>
-                                </div>
-                            </form>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent small-margin" v-on:click="attackFromP1">
+                                -> Attack ->
+                            </button>
+
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored small-margin" v-on:click="attackFromP2">
+                                <- Attack <-
+                            </button>
+                            <p>Current Attack Multiplier: <strong>{{atkMult}}</strong></p>
+                            <p>Current Defense Multiplier: <strong>{{defMult}}</strong></p>
+                            <p><strong>1 Mult : atk/def Multiplier</strong></p>
+                        </div>
+                        <div class="mdl-layout-spacer"></div>
+                    </div>
+                    <div class="mdl-cell--4-col mdl-grid black-border">
+                        <div class="mdl-layout-spacer"></div>
+                        <div class="mdl-cell--8-col">
+                            
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input" type="text" id="p2name" v-model="stats.player2.name" v-on:change="emitChange">
+                                <label class="mdl-textfield__label" for="p2name">Player 2</label>
+                            </div>
+                            
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="player2hp" v-model="stats.player2.hp" v-on:change="emitChange">
+                                <label class="mdl-textfield__label" for="player2hp">HP</label>
+                                <span class="mdl-textfield__error">Input is not a number!</span>
+                            </div>
+
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="player2atk" v-model="stats.player2.atk" v-on:change="emitChange">
+                                <label class="mdl-textfield__label" for="player2atk">Attack</label>
+                                <span class="mdl-textfield__error">Input is not a number!</span>
+                            </div>
+
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="player2def" v-model="stats.player2.def" v-on:change="emitChange">
+                                <label class="mdl-textfield__label" for="player2def">Defense</label>
+                                <span class="mdl-textfield__error">Input is not a number!</span>
+                            </div>
+
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="player2atkmult" v-model="stats.player2.atkMult" v-on:change="emitChange">
+                                <label class="mdl-textfield__label" for="player2atkmult">Attack Multiplier</label>
+                                <span class="mdl-textfield__error">Input is not a number!</span>
+                            </div>
+
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="player2defmult" v-model="stats.player2.defMult" v-on:change="emitChange">
+                                <label class="mdl-textfield__label" for="player2defmult">Defense Multiplier</label>
+                                <span class="mdl-textfield__error">Input is not a number!</span>
+                            </div>
+
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="player2extra" v-model="stats.player2.extraDmg" v-on:change="emitChange">
+                                <label class="mdl-textfield__label" for="player2extra">Additional Damage</label>
+                                <span class="mdl-textfield__error">Input is not a number!</span>
+                            </div>
                         </div>
                         <div class="mdl-layout-spacer"></div>
                     </div>
