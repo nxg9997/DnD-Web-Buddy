@@ -1,5 +1,49 @@
 "use strict";
 
+var canvas;
+var ctx;
+
+(function () {
+  window.onload = function () {
+    canvas = document.querySelector('#cardCanvas');
+    ctx = canvas.getContext('2d');
+    canvas.width = 409;
+    canvas.height = 585;
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, 409, 585);
+    updateCard();
+  };
+})();
+
+function updateCard() {
+  ctx.fillStyle = 'white';
+  ctx.fillRect(0, 0, 409, 585);
+  ctx.font = "20px Arial";
+  ctx.fillStyle = 'black';
+  ctx.textAlign = "center"; // - type
+
+  ctx.fillText(app.currentCard.type, canvas.width / 2, 20); // - name
+
+  ctx.font = "50px Arial";
+  ctx.fillText(app.currentCard.name, canvas.width / 2, 100); // - top text
+
+  var split = app.currentCard.topText.match(/.{1,30}/g);
+  ctx.font = "20px Arial";
+
+  for (var i = 0; i < split.length; i++) {
+    ctx.fillText(split[i], canvas.width / 2, 250 + i * 20);
+  } // - bottom text
+
+
+  split = app.currentCard.bottomText.match(/.{1,30}/g);
+  ctx.font = "20px Arial";
+
+  for (var _i = 0; _i < split.length; _i++) {
+    ctx.fillText(split[_i], canvas.width / 2, 450 + _i * 20);
+  }
+}
+"use strict";
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -64,11 +108,19 @@ var Player = /*#__PURE__*/function () {
       title: 'DnD Buddy',
       links: [{
         label: 'Card Builder',
-        href: './builder'
+        href: './builder.html'
       }, {
         label: 'Stat Tracker',
         href: './'
       }],
+      currentCard: {
+        name: 'Name',
+        type: 'Type',
+        topText: 'Top Text',
+        bottomText: 'Bottom Text'
+      },
+      user: 'unknown',
+      dlbtnHref: '/builder.html',
       stats: {
         player1: new Player('Player 1'),
         player2: new Player('Player 2')
@@ -89,6 +141,66 @@ var Player = /*#__PURE__*/function () {
       },
       changeRoom: function changeRoom() {
         socket.emit('room change', app.roomID);
+      },
+      updateCard: function (_updateCard) {
+        function updateCard() {
+          return _updateCard.apply(this, arguments);
+        }
+
+        updateCard.toString = function () {
+          return _updateCard.toString();
+        };
+
+        return updateCard;
+      }(function () {
+        updateCard(); //app.downloadCard();
+      }),
+      downloadCard: function downloadCard() {
+        var img = canvas.toDataURL('image/jpg'); //window.location.href = img;
+        //window.location
+
+        var link = document.createElement('a');
+        link.download = 'card.jpg';
+        link.href = img;
+        link.click();
+      },
+      saveCardtoDB: function saveCardtoDB() {
+        var newCard = {
+          name: app.currentCard.name,
+          type: app.currentCard.type,
+          topText: app.currentCard.topText,
+          bottomText: app.currentCard.bottomText,
+          user: app.user
+        };
+        console.log(newCard);
+        fetch('/card', {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(newCard)
+        }).then(function (res) {
+          res.json().then(function (data) {
+            console.log(data);
+          });
+        });
+      },
+      loadCardByName: function loadCardByName() {
+        fetch('/getCard', {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            name: app.currentCard.name
+          })
+        }).then(function (res) {
+          res.json().then(function (data) {
+            console.log(data);
+            app.currentCard = data;
+            updateCard();
+          });
+        });
       }
     },
     watch: {

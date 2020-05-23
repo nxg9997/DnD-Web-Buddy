@@ -50,13 +50,21 @@ class Player {
             links: [
                 {
                     label: 'Card Builder',
-                    href: './builder',
+                    href: './builder.html',
                 },
                 {
                     label: 'Stat Tracker',
                     href: './',
                 },
             ],
+            currentCard: {
+                name: 'Name',
+                type: 'Type',
+                topText: 'Top Text',
+                bottomText: 'Bottom Text',
+            },
+            user: 'unknown',
+            dlbtnHref: '/builder.html',
             stats: {
                 player1: new Player('Player 1'),
                 player2: new Player('Player 2'),
@@ -78,12 +86,50 @@ class Player {
             },
             changeRoom: () => {
                 socket.emit('room change', app.roomID);
+            },
+            updateCard: () => {
+                updateCard();
+                //app.downloadCard();
+            },
+            downloadCard: () => {
+                let img = canvas.toDataURL('image/jpg');
+                //window.location.href = img;
+                //window.location
+                let link = document.createElement('a');
+                link.download = 'card.jpg';
+                link.href = img;
+                link.click();
+            },
+            saveCardtoDB: () => {
+                let newCard = {
+                    name: app.currentCard.name,
+                    type: app.currentCard.type,
+                    topText: app.currentCard.topText,
+                    bottomText: app.currentCard.bottomText,
+                    user: app.user,
+                };
+                console.log(newCard);
+
+                fetch('/card', {method:'POST', headers:{"Content-Type":"application/json"}, body: JSON.stringify(newCard)}).then((res)=>{
+                    res.json().then(data=>{
+                        console.log(data);
+                    });
+                });
+            },
+            loadCardByName: () => {
+                fetch('/getCard', {method:'POST', headers:{"Content-Type":"application/json"}, body: JSON.stringify({name:app.currentCard.name})}).then((res)=>{
+                    res.json().then(data=>{
+                        console.log(data);
+                        app.currentCard = data;
+                        updateCard();
+                    });
+                });
             }
         },
         watch: {
             stats: () => {
                 app.emitChange();
-            }
+            },
         }
     });
 

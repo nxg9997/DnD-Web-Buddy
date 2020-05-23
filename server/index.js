@@ -1,10 +1,25 @@
 console.log('hello world');
 const https = require("https");
-let fs = require('fs');
+const fs = require('fs');
 const port = process.env.PORT || 3000; // gets the port from heroku, or defaults to port 3000
-let express =  require('express');
-let parser = require('body-parser');
+const express =  require('express');
+const parser = require('body-parser');
+const mongoose = require('mongoose');
+const controllers = require('./Controllers');
 
+const dbURL = process.env.MONGODB_URI || 'mongodb://localhost/dndwebbuddy';
+
+const mongooseOptions = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+};
+
+mongoose.connect(dbURL, mongooseOptions, (err) => {
+    if(err){
+        console.log('couldn\'t connect to db');
+        throw err;
+    }
+});
 
 
 //create express app
@@ -14,17 +29,21 @@ app.use(parser.json({type:'application/json'}));
 app.use(express['static'](`${__dirname}/../client`));
 
 
+app.post('/card', (req, res) => {
+    console.log(req.body);
+    controllers.Card.create(req,res);
+});
 
-/*app.get('/', (req,res) => {
-    fs.readFile(`./client/index.html`, (err, data) => {
-        if(err){
-            return res.status(500).json({error:'Error reading resource'});
-        }
-        else{
-            return res.status(200).type('text/html').send(data);
-        }
-    })
-})*/
+app.post('/getCard', (req, res) => {
+    controllers.Card.getCardByName(req,res,(data)=>{
+        //data.card.blah
+        res.send(data.card);
+    });
+});
+
+/*app.get('/builder', (req, res) => {
+    res.sendfile('../client/builder.html');
+});*/
 
 let server = app.listen(port, (err) => {
     if(err){
