@@ -17,7 +17,7 @@ function updateStats(str){
 // - p1 attacks p2
 function attack(p1,p2){
     console.log("attack!");
-    let dmg = ((parseInt(p1.atk) * (parseFloat(p1.atkMult) * app.atkMult + 1)) + parseInt(p1.extraDmg)) - (parseInt(p2.def) * (parseFloat(p2.defMult) * app.DefMult + 1));
+    let dmg = ((parseInt(p1.atk) * (parseFloat(p1.atkMult) * 0.25 + 1)) + parseInt(p1.extraDmg)) - (parseInt(p2.def) * (parseFloat(p2.defMult) * 0.25 + 1));
     if(dmg < 0) dmg = 0;
 
     p2.hp = Math.round(parseFloat(p2.hp) - dmg);
