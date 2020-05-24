@@ -97,7 +97,7 @@ class Player {
                 //window.location.href = img;
                 //window.location
                 let link = document.createElement('a');
-                link.download = 'card.jpg';
+                link.download = `${app.currentCard.name}.jpg`;
                 link.href = img;
                 link.click();
             },
@@ -114,6 +114,7 @@ class Player {
                 fetch('/card', {method:'POST', headers:{"Content-Type":"application/json"}, body: JSON.stringify(newCard)}).then((res)=>{
                     res.json().then(data=>{
                         console.log(data);
+                        getAllCards();
                     });
                 });
             },
@@ -130,6 +131,14 @@ class Player {
                 app.currentCard.name = name;
                 app.loadCardByName();
             },
+            deleteCard: () => {
+                fetch('/deleteCard', {method:'POST', headers:{"Content-Type":"application/json"}, body: JSON.stringify({name: app.currentCard.name})}).then((res)=>{
+                    res.json().then(data=>{
+                        console.log(data);
+                        getAllCards();
+                    });
+                });
+            }
         },
         watch: {
             stats: () => {
@@ -138,11 +147,15 @@ class Player {
         }
     });
 
+    getAllCards();
+
+})();
+
+function getAllCards() {
     fetch('/getCard', {method:'GET'}).then(res=>{
         res.json().then(data=>{
             console.log(data);
             app.allCards = data;
         });
     });
-
-})();
+}

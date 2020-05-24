@@ -88,6 +88,25 @@ const getAllCards = (request, response, callback) => {
     });
 };
 
+const deleteCard = (request, response) => {
+    const req = request;
+    const res = response;
+
+    const filter = {
+        name: `${req.body.name}`,
+    };
+
+    return Card.CardModel.deleteOne(filter, (err) => {
+        if(err){
+            console.log(err);
+            return res.status(400).json({error:'Error deleting the card'});
+        }
+
+        return res.json({success:'Deleted the card successfully'});
+    });
+};
+
 module.exports.create = create;
 module.exports.getCardByName = getCardByName;
 module.exports.getAllCards = getAllCards;
+module.exports.deleteCard = deleteCard;

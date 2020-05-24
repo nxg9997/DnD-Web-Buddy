@@ -161,7 +161,7 @@ var Player = /*#__PURE__*/function () {
         //window.location
 
         var link = document.createElement('a');
-        link.download = 'card.jpg';
+        link.download = "".concat(app.currentCard.name, ".jpg");
         link.href = img;
         link.click();
       },
@@ -183,6 +183,7 @@ var Player = /*#__PURE__*/function () {
         }).then(function (res) {
           res.json().then(function (data) {
             console.log(data);
+            getAllCards();
           });
         });
       },
@@ -206,6 +207,22 @@ var Player = /*#__PURE__*/function () {
       loadCardByClick: function loadCardByClick(name) {
         app.currentCard.name = name;
         app.loadCardByName();
+      },
+      deleteCard: function deleteCard() {
+        fetch('/deleteCard', {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            name: app.currentCard.name
+          })
+        }).then(function (res) {
+          res.json().then(function (data) {
+            console.log(data);
+            getAllCards();
+          });
+        });
       }
     },
     watch: {
@@ -214,6 +231,10 @@ var Player = /*#__PURE__*/function () {
       }
     }
   });
+  getAllCards();
+})();
+
+function getAllCards() {
   fetch('/getCard', {
     method: 'GET'
   }).then(function (res) {
@@ -222,7 +243,7 @@ var Player = /*#__PURE__*/function () {
       app.allCards = data;
     });
   });
-})();
+}
 "use strict";
 
 var socket = io();

@@ -21,3 +21,11 @@ body {
 .black-border {
     border: 2px solid black;
 }
+
+.color-red {
+    background-color: rgb(255, 51, 51);
+}
+
+.color-red:hover {
+    background-color: rgb(255, 51, 51);
+}

@@ -48,6 +48,10 @@ app.get('/getCard', (req, res) => {
     });
 });
 
+app.post('/deleteCard', (req, res) => {
+    controllers.Card.deleteCard(req,res);
+});
+
 /*app.get('/builder', (req, res) => {
     res.sendfile('../client/builder.html');
 });*/
