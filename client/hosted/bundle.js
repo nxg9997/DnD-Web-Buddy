@@ -106,6 +106,7 @@ var Player = /*#__PURE__*/function () {
     data: {
       hw: 'hello vue!',
       title: 'DnD Buddy',
+      allCards: [],
       links: [{
         label: 'Card Builder',
         href: './builder.html'
@@ -201,6 +202,10 @@ var Player = /*#__PURE__*/function () {
             updateCard();
           });
         });
+      },
+      loadCardByClick: function loadCardByClick(name) {
+        app.currentCard.name = name;
+        app.loadCardByName();
       }
     },
     watch: {
@@ -208,6 +213,14 @@ var Player = /*#__PURE__*/function () {
         app.emitChange();
       }
     }
+  });
+  fetch('/getCard', {
+    method: 'GET'
+  }).then(function (res) {
+    res.json().then(function (data) {
+      console.log(data);
+      app.allCards = data;
+    });
   });
 })();
 "use strict";

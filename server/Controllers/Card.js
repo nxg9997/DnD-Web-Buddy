@@ -80,5 +80,14 @@ const getCardByName = (request, response, callback) => {
     });
 };
 
+const getAllCards = (request, response, callback) => {
+    const req = request;
+
+    Card.CardModel.find({}, (err, docs) => {
+        callback(docs);
+    });
+};
+
 module.exports.create = create;
 module.exports.getCardByName = getCardByName;
+module.exports.getAllCards = getAllCards;

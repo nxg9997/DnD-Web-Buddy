@@ -47,6 +47,7 @@ class Player {
         data: {
             hw: 'hello vue!',
             title: 'DnD Buddy',
+            allCards: [],
             links: [
                 {
                     label: 'Card Builder',
@@ -124,7 +125,11 @@ class Player {
                         updateCard();
                     });
                 });
-            }
+            },
+            loadCardByClick: (name) => {
+                app.currentCard.name = name;
+                app.loadCardByName();
+            },
         },
         watch: {
             stats: () => {
@@ -133,6 +138,11 @@ class Player {
         }
     });
 
-    
+    fetch('/getCard', {method:'GET'}).then(res=>{
+        res.json().then(data=>{
+            console.log(data);
+            app.allCards = data;
+        });
+    });
 
 })();

@@ -41,6 +41,13 @@ app.post('/getCard', (req, res) => {
     });
 });
 
+app.get('/getCard', (req, res) => {
+    controllers.Card.getAllCards(req,res,(data) => {
+        console.log(data);
+        res.send(data);
+    });
+});
+
 /*app.get('/builder', (req, res) => {
     res.sendfile('../client/builder.html');
 });*/
