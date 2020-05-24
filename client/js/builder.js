@@ -32,16 +32,30 @@ function updateCard() {
     ctx.fillText(app.currentCard.name, canvas.width / 2, 100);
 
     // - top text
-    let split = app.currentCard.topText.match(/.{1,30}/g);
+    let split = createMultiline(app.currentCard.topText);//app.currentCard.topText.match(/.{1,30}/g);
 
     ctx.font = "20px Arial";
     for(let i = 0; i < split.length; i++)
         ctx.fillText(split[i], canvas.width / 2, 250 + (i * 20));
 
     // - bottom text
-    split = app.currentCard.bottomText.match(/.{1,30}/g);
+    split = createMultiline(app.currentCard.bottomText);
 
     ctx.font = "20px Arial";
     for(let i = 0; i < split.length; i++)
         ctx.fillText(split[i], canvas.width / 2, 450 + (i * 20));
+}
+
+function createMultiline(str) {
+    let arr = [];
+
+    let split1 = str.split('|');
+    for(let i = 0; i < split1.length; i++){
+        let split2 = split1[i].match(/.{1,30}/g);
+        for(let j = 0; j < split2.length; j++){
+            arr.push(split2[j]);
+        }
+    }
+
+    return arr;
 }

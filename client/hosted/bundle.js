@@ -27,7 +27,8 @@ function updateCard() {
   ctx.font = "50px Arial";
   ctx.fillText(app.currentCard.name, canvas.width / 2, 100); // - top text
 
-  var split = app.currentCard.topText.match(/.{1,30}/g);
+  var split = createMultiline(app.currentCard.topText); //app.currentCard.topText.match(/.{1,30}/g);
+
   ctx.font = "20px Arial";
 
   for (var i = 0; i < split.length; i++) {
@@ -35,12 +36,27 @@ function updateCard() {
   } // - bottom text
 
 
-  split = app.currentCard.bottomText.match(/.{1,30}/g);
+  split = createMultiline(app.currentCard.bottomText);
   ctx.font = "20px Arial";
 
   for (var _i = 0; _i < split.length; _i++) {
     ctx.fillText(split[_i], canvas.width / 2, 450 + _i * 20);
   }
+}
+
+function createMultiline(str) {
+  var arr = [];
+  var split1 = str.split('|');
+
+  for (var i = 0; i < split1.length; i++) {
+    var split2 = split1[i].match(/.{1,30}/g);
+
+    for (var j = 0; j < split2.length; j++) {
+      arr.push(split2[j]);
+    }
+  }
+
+  return arr;
 }
 "use strict";
 
