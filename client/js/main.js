@@ -57,7 +57,12 @@ class Player {
                     label: 'Stat Tracker',
                     href: './',
                 },
+                {
+                    label: 'Deck Builder',
+                    href: './deck.html',
+                },
             ],
+            deck: [],
             currentCard: {
                 name: 'Name',
                 type: 'Type',
@@ -113,7 +118,7 @@ class Player {
 
                 fetch('/card', {method:'POST', headers:{"Content-Type":"application/json"}, body: JSON.stringify(newCard)}).then((res)=>{
                     res.json().then(data=>{
-                        console.log(data);
+                        //console.log(data);
                         getAllCards();
                     });
                 });
@@ -121,7 +126,7 @@ class Player {
             loadCardByName: () => {
                 fetch('/getCard', {method:'POST', headers:{"Content-Type":"application/json"}, body: JSON.stringify({name:app.currentCard.name})}).then((res)=>{
                     res.json().then(data=>{
-                        console.log(data);
+                        //console.log(data);
                         app.currentCard = data;
                         updateCard();
                     });
@@ -134,20 +139,45 @@ class Player {
             deleteCard: () => {
                 fetch('/deleteCard', {method:'POST', headers:{"Content-Type":"application/json"}, body: JSON.stringify({name: app.currentCard.name})}).then((res)=>{
                     res.json().then(data=>{
-                        console.log(data);
+                        //console.log(data);
                         getAllCards();
                     });
                 });
+            },
+            addToDeck: (name) => {
+                //console.log(name);
+                app.deck.push(name.name);
+                app.deck.sort();
+            },
+            removeFromDeck: (name) => {
+                for(let i = 0; i < app.deck.length; i++){
+                    if(app.deck[i] === name){
+                        console.log('splicing ' + name)
+                        app.deck.splice(i,1);
+                        return;
+                    }
+                }
+            },
+            downloadDeck: () => {
+                buildDeck();
             }
         },
         watch: {
             stats: () => {
                 app.emitChange();
             },
+        },
+        updated() {
+            if(window.drawCards){
+                //console.log('exists');
+                drawCards();
+            }
         }
     });
 
     getAllCards();
+
+    
 
 })();
 

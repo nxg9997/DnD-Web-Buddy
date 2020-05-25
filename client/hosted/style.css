@@ -10,6 +10,10 @@ body {
     display: flex;
 }
 
+.flex-col {
+    flex-direction: column;
+}
+
 .full-width {
     width: 100%;
 }
@@ -28,4 +32,16 @@ body {
 
 .color-red:hover {
     background-color: rgb(255, 51, 51);
+}
+
+.deck-canvas {
+    width: 25%;
+}
+
+.float-right {
+    float: right;
+}
+
+.translate-vert-half {
+    transform: translateY(15%);
 }

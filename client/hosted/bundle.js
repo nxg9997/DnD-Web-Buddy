@@ -16,31 +16,47 @@ var ctx;
 })();
 
 function updateCard() {
-  ctx.fillStyle = 'white';
-  ctx.fillRect(0, 0, 409, 585);
-  ctx.font = "20px Arial";
-  ctx.fillStyle = 'black';
-  ctx.textAlign = "center"; // - type
+  var _canvas = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
-  ctx.fillText(app.currentCard.type, canvas.width / 2, 20); // - name
+  var _ctx = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
-  ctx.font = "50px Arial";
-  ctx.fillText(app.currentCard.name, canvas.width / 2, 100); // - top text
+  var card = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+  var scale = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1.0;
+  if (_canvas === null) _canvas = canvas;
+  if (_ctx === null) _ctx = ctx;
+  if (card === null) card = app.currentCard;
+  _canvas.width = 409 * scale;
+  _canvas.height = 585 * scale;
+  _ctx.fillStyle = 'white';
 
-  var split = createMultiline(app.currentCard.topText); //app.currentCard.topText.match(/.{1,30}/g);
+  _ctx.fillRect(0, 0, 409 * scale, 585 * scale);
 
-  ctx.font = "20px Arial";
+  _ctx.font = "".concat(20 * scale, "px Arial");
+  _ctx.fillStyle = 'black';
+  _ctx.textAlign = "center"; // - type
+
+  _ctx.fillText(card.type, _canvas.width / 2, 20 * scale); // - name
+
+
+  _ctx.font = "".concat(50 * scale, "px Arial");
+
+  _ctx.fillText(card.name, _canvas.width / 2, 100 * scale); // - top text
+
+
+  var split = createMultiline(card.topText); //card.topText.match(/.{1,30}/g);
+
+  _ctx.font = "".concat(20 * scale, "px Arial");
 
   for (var i = 0; i < split.length; i++) {
-    ctx.fillText(split[i], canvas.width / 2, 250 + i * 20);
+    _ctx.fillText(split[i], _canvas.width / 2, 250 * scale + i * 20 * scale);
   } // - bottom text
 
 
-  split = createMultiline(app.currentCard.bottomText);
-  ctx.font = "20px Arial";
+  split = createMultiline(card.bottomText);
+  _ctx.font = "".concat(20 * scale, "px Arial");
 
   for (var _i = 0; _i < split.length; _i++) {
-    ctx.fillText(split[_i], canvas.width / 2, 450 + _i * 20);
+    _ctx.fillText(split[_i], _canvas.width / 2, 450 * scale + _i * 20 * scale);
   }
 }
 
@@ -129,7 +145,11 @@ var Player = /*#__PURE__*/function () {
       }, {
         label: 'Stat Tracker',
         href: './'
+      }, {
+        label: 'Deck Builder',
+        href: './deck.html'
       }],
+      deck: [],
       currentCard: {
         name: 'Name',
         type: 'Type',
@@ -198,7 +218,7 @@ var Player = /*#__PURE__*/function () {
           body: JSON.stringify(newCard)
         }).then(function (res) {
           res.json().then(function (data) {
-            console.log(data);
+            //console.log(data);
             getAllCards();
           });
         });
@@ -214,7 +234,7 @@ var Player = /*#__PURE__*/function () {
           })
         }).then(function (res) {
           res.json().then(function (data) {
-            console.log(data);
+            //console.log(data);
             app.currentCard = data;
             updateCard();
           });
@@ -235,15 +255,38 @@ var Player = /*#__PURE__*/function () {
           })
         }).then(function (res) {
           res.json().then(function (data) {
-            console.log(data);
+            //console.log(data);
             getAllCards();
           });
         });
+      },
+      addToDeck: function addToDeck(name) {
+        //console.log(name);
+        app.deck.push(name.name);
+        app.deck.sort();
+      },
+      removeFromDeck: function removeFromDeck(name) {
+        for (var _i = 0; _i < app.deck.length; _i++) {
+          if (app.deck[_i] === name) {
+            console.log('splicing ' + name);
+            app.deck.splice(_i, 1);
+            return;
+          }
+        }
+      },
+      downloadDeck: function downloadDeck() {
+        buildDeck();
       }
     },
     watch: {
       stats: function stats() {
         app.emitChange();
+      }
+    },
+    updated: function updated() {
+      if (window.drawCards) {
+        //console.log('exists');
+        drawCards();
       }
     }
   });

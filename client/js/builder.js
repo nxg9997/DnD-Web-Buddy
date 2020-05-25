@@ -16,34 +16,41 @@ var ctx;
     
 })();
 
-function updateCard() {
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0,0,409,585);
-    ctx.font = "20px Arial";
+function updateCard(_canvas=null, _ctx=null, card=null, scale=1.0) {
+    if(_canvas === null) _canvas = canvas;
+    if(_ctx === null) _ctx = ctx;
+    if(card === null) card = app.currentCard;
 
-    ctx.fillStyle = 'black';
-    ctx.textAlign = "center";
+    _canvas.width = 409 * scale;
+    _canvas.height = 585 * scale;
+
+    _ctx.fillStyle = 'white';
+    _ctx.fillRect(0,0,409 * scale,585 * scale);
+    _ctx.font = `${20 * scale}px Arial`;
+
+    _ctx.fillStyle = 'black';
+    _ctx.textAlign = "center";
 
     // - type
-    ctx.fillText(app.currentCard.type, canvas.width / 2, 20);
+    _ctx.fillText(card.type, _canvas.width / 2, 20 * scale);
 
     // - name
-    ctx.font = "50px Arial";
-    ctx.fillText(app.currentCard.name, canvas.width / 2, 100);
+    _ctx.font = `${50 * scale}px Arial`;
+    _ctx.fillText(card.name, _canvas.width / 2, 100 * scale);
 
     // - top text
-    let split = createMultiline(app.currentCard.topText);//app.currentCard.topText.match(/.{1,30}/g);
+    let split = createMultiline(card.topText);//card.topText.match(/.{1,30}/g);
 
-    ctx.font = "20px Arial";
+    _ctx.font = `${20 * scale}px Arial`;
     for(let i = 0; i < split.length; i++)
-        ctx.fillText(split[i], canvas.width / 2, 250 + (i * 20));
+        _ctx.fillText(split[i], _canvas.width / 2, 250 * scale + (i * 20 * scale));
 
     // - bottom text
-    split = createMultiline(app.currentCard.bottomText);
+    split = createMultiline(card.bottomText);
 
-    ctx.font = "20px Arial";
+    _ctx.font = `${20 * scale}px Arial`;
     for(let i = 0; i < split.length; i++)
-        ctx.fillText(split[i], canvas.width / 2, 450 + (i * 20));
+        _ctx.fillText(split[i], _canvas.width / 2, 450 * scale + (i * 20 * scale));
 }
 
 function createMultiline(str) {
