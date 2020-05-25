@@ -6,6 +6,7 @@ var ctx;
 (function () {
   window.onload = function () {
     canvas = document.querySelector('#cardCanvas');
+    if (canvas === null) return;
     ctx = canvas.getContext('2d');
     canvas.width = 409;
     canvas.height = 585;
@@ -35,28 +36,29 @@ function updateCard() {
   _ctx.fillStyle = 'black';
   _ctx.textAlign = "center"; // - type
 
-  _ctx.fillText(card.type, _canvas.width / 2, 20 * scale); // - name
-
+  if (card.type !== null) _ctx.fillText(card.type, _canvas.width / 2, 20 * scale); // - name
 
   _ctx.font = "".concat(50 * scale, "px Arial");
-
-  _ctx.fillText(card.name, _canvas.width / 2, 100 * scale); // - top text
-
+  if (card.name !== null) _ctx.fillText(card.name, _canvas.width / 2, 100 * scale); // - top text
 
   var split = createMultiline(card.topText); //card.topText.match(/.{1,30}/g);
 
   _ctx.font = "".concat(20 * scale, "px Arial");
 
-  for (var i = 0; i < split.length; i++) {
-    _ctx.fillText(split[i], _canvas.width / 2, 250 * scale + i * 20 * scale);
+  if (split !== null) {
+    for (var i = 0; i < split.length; i++) {
+      _ctx.fillText(split[i], _canvas.width / 2, 250 * scale + i * 20 * scale);
+    }
   } // - bottom text
 
 
   split = createMultiline(card.bottomText);
   _ctx.font = "".concat(20 * scale, "px Arial");
 
-  for (var _i = 0; _i < split.length; _i++) {
-    _ctx.fillText(split[_i], _canvas.width / 2, 450 * scale + _i * 20 * scale);
+  if (split !== null) {
+    for (var _i = 0; _i < split.length; _i++) {
+      _ctx.fillText(split[_i], _canvas.width / 2, 450 * scale + _i * 20 * scale);
+    }
   }
 }
 
@@ -67,8 +69,10 @@ function createMultiline(str) {
   for (var i = 0; i < split1.length; i++) {
     var split2 = split1[i].match(/.{1,30}/g);
 
-    for (var j = 0; j < split2.length; j++) {
-      arr.push(split2[j]);
+    if (split2 !== null) {
+      for (var j = 0; j < split2.length; j++) {
+        arr.push(split2[j]);
+      }
     }
   }
 
