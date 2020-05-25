@@ -43,7 +43,7 @@
                     <div class="mdl-cell--12-col center-text">
                         <h2>DnD - Deck Builder</h2>
                     </div>
-                    <div class="mdl-cell--8-col black-border display-flex">
+                    <div class="mdl-cell--8-col black-border display-flex flex-wrap">
                         <div v-for="c in allCards" class="deck-canvas small-margin center-text">
                             <canvas height="100" width="100" v-on:click="addToDeck(c)">{{c.name}}</canvas>
                         </div>
