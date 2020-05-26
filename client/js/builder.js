@@ -35,8 +35,11 @@ function updateCard(_canvas=null, _ctx=null, card=null, scale=1.0, callback=null
     
     if(card.art === '')
         art.src = '/hosted/img/white.jpg';
+    else if(card.art[0] !== '/')
+        art.src = '/art?src=' + card.art;
     else
         art.src = card.art;
+
     art.addEventListener('load', () => {
         let widthRatio = 1.0;
         if(art.width > 409){

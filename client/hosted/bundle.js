@@ -35,7 +35,7 @@ function updateCard() {
 
   var art = new Image();
   art.crossOrigin = 'anonymous';
-  if (card.art === '') art.src = '/hosted/img/white.jpg';else art.src = card.art;
+  if (card.art === '') art.src = '/hosted/img/white.jpg';else if (card.art[0] !== '/') art.src = '/art?src=' + card.art;else art.src = card.art;
   art.addEventListener('load', function () {
     var widthRatio = 1.0;
 

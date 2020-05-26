@@ -6,6 +6,7 @@ const express =  require('express');
 const parser = require('body-parser');
 const mongoose = require('mongoose');
 const controllers = require('./Controllers');
+const request = require('request');
 
 const dbURL = process.env.MONGODB_URI || 'mongodb://localhost/dndwebbuddy';
 
@@ -45,6 +46,23 @@ app.get('/getCard', (req, res) => {
     controllers.Card.getAllCards(req,res,(data) => {
         console.log(data);
         res.send(data);
+    });
+});
+
+app.get('/art', (req, res) => {
+    //console.log(req.url);
+    let split = req.url.split('?');
+    let src = split[1].split('=')[1];
+    //console.log(src);
+
+    request({url:src, encoding:null, method: 'GET'},(error,res2,body)=>{
+        if(error){
+            console.log(error);
+            return res.status(501).json({error:'error'});
+        }
+        //console.log(res2);
+        res.set('Content-Type', res2.headers['content-type']);
+        res.send(body);
     });
 });
 
