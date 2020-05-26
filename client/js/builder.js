@@ -18,7 +18,7 @@ var ctx;
     
 })();
 
-function updateCard(_canvas=null, _ctx=null, card=null, scale=1.0) {
+function updateCard(_canvas=null, _ctx=null, card=null, scale=1.0, callback=null) {
     if(_canvas === null) _canvas = canvas;
     if(_ctx === null) _ctx = ctx;
     if(card === null) card = app.currentCard;
@@ -28,38 +28,117 @@ function updateCard(_canvas=null, _ctx=null, card=null, scale=1.0) {
 
     _ctx.fillStyle = 'white';
     _ctx.fillRect(0,0,409 * scale,585 * scale);
-    _ctx.font = `${20 * scale}px Arial`;
 
-    _ctx.fillStyle = 'black';
-    _ctx.textAlign = "center";
+    let art = new Image();
 
-    // - type
-    if(card.type !== null)
-        _ctx.fillText(card.type, _canvas.width / 2, 20 * scale);
-
-    // - name
-    _ctx.font = `${50 * scale}px Arial`;
-    if(card.name !== null)
-        _ctx.fillText(card.name, _canvas.width / 2, 100 * scale);
-
-    // - top text
-    let split = createMultiline(card.topText);//card.topText.match(/.{1,30}/g);
-
-    _ctx.font = `${20 * scale}px Arial`;
-    if(split !== null){
-        for(let i = 0; i < split.length; i++)
-            _ctx.fillText(split[i], _canvas.width / 2, 250 * scale + (i * 20 * scale));
-    }
+    art.crossOrigin = 'anonymous';
     
+    if(card.art === '')
+        art.src = '/hosted/img/white.jpg';
+    else
+        art.src = card.art;
+    art.addEventListener('load', () => {
+        let widthRatio = 1.0;
+        if(art.width > 409){
+            widthRatio = 409 / art.width;
+        }
+        _ctx.drawImage(art,0,100 * scale,art.width * widthRatio * scale, art.height * widthRatio * scale);
 
-    // - bottom text
-    split = createMultiline(card.bottomText);
+        let bg = new Image();
+        switch(card.style){
+            case 'Field':
+                bg.src = '/hosted/img/FieldCardBase.png';
+                break;
+            case 'Attack':
+                bg.src = '/hosted/img/AttackCardBase.png';
+                break;
+            case 'Object':
+                bg.src = '/hosted/img/ObjectCardBase.png';
+                break;
+            case 'Reaction':
+                bg.src = '/hosted/img/ReactionCardBase.png';
+                break;
+            case 'Spell':
+                bg.src = '/hosted/img/SpellCardBase.png';
+                break;
+        }
+        
+        bg.addEventListener('load', () => {
+            //console.log('loaded');
+            _ctx.drawImage(bg,0,0,409 * scale, 585 * scale);
+            _ctx.font = `${20 * scale}px Arial`;
+        
+            _ctx.fillStyle = 'black';
+            _ctx.textAlign = "center";
+        
+            // - type
+            if(card.type !== null)
+                _ctx.fillText(card.type, _canvas.width / 6, 60 * scale);
+        
+            // - name
+            _ctx.font = `${50 * scale}px Arial`;
+            if(card.name !== null)
+                _ctx.fillText(card.name, _canvas.width / 2, 70 * scale);
 
-    _ctx.font = `${20 * scale}px Arial`;
-    if(split !== null){
-        for(let i = 0; i < split.length; i++)
-            _ctx.fillText(split[i], _canvas.width / 2, 450 * scale + (i * 20 * scale));
-    }
+            // - value
+            if(card.style === 'Attack'){
+                _ctx.font = `${40 * scale}px Arial`;
+                _ctx.fillText(card.value, _canvas.width / 2, 325 * scale);
+            }
+            else if(card.style === 'Object'){
+                _ctx.font = `${40 * scale}px Arial`;
+                _ctx.fillText(card.value, 55 * scale, 540 * scale);
+            }
+        
+            // - top text
+            let yOffset = 0;
+            if(card.style === 'Attack'){
+                yOffset = 100;
+            }
+            let split = createMultiline(card.topText);//card.topText.match(/.{1,30}/g);
+        
+            _ctx.font = `${20 * scale}px Arial`;
+            if(split !== null){
+                for(let i = 0; i < split.length; i++)
+                    _ctx.fillText(split[i], _canvas.width / 2, (315 + yOffset) * scale + (i * 20 * scale));
+            }
+            
+        
+            // - bottom text
+            split = createMultiline(card.bottomText);
+        
+            _ctx.font = `${20 * scale}px Arial`;
+            if(split !== null){
+                for(let i = 0; i < split.length; i++)
+                    _ctx.fillText(split[i], _canvas.width / 2, (450 + yOffset/2) * scale + (i * 20 * scale));
+            }
+
+            if(card.evolves){
+                let evo = new Image();
+                evo.src = '/hosted/img/evolve_temp.png';
+                evo.addEventListener('load', () => {
+                    _ctx.drawImage(evo, (409 - 75) * scale, (585 - 75) * scale, evo.width * scale / 2, evo.height * scale / 2);
+                    if(callback) callback();
+                });
+            }
+            else{
+                if(callback) callback();
+            }
+        });
+    });
+    art.addEventListener('error',(err)=>{
+        console.log(err);
+        var snackbarContainer = document.querySelector('#snackbar');
+        var data = {
+            message: 'Art Source doesn\'t allow Cross-Origin',
+            timeout: 6000,
+            actionHandler: ()=>{},
+            actionText: 'Undo',
+        };
+        snackbarContainer.MaterialSnackbar.showSnackbar(data);
+    });
+    
+    
 }
 
 function createMultiline(str) {

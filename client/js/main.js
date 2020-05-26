@@ -68,6 +68,10 @@ class Player {
                 type: 'Type',
                 topText: 'Top Text',
                 bottomText: 'Bottom Text',
+                art: '/hosted/img/white.jpg',
+                style: 'Field',
+                value: '0',
+                evolves: false,
             },
             user: 'unknown',
             dlbtnHref: '/builder.html',
@@ -113,6 +117,10 @@ class Player {
                     topText: app.currentCard.topText,
                     bottomText: app.currentCard.bottomText,
                     user: app.user,
+                    art: app.currentCard.art,
+                    style: app.currentCard.style,
+                    value: app.currentCard.value,
+                    evolves: app.currentCard.evolves,
                 };
                 console.log(newCard);
 
@@ -160,7 +168,12 @@ class Player {
             },
             downloadDeck: () => {
                 buildDeck();
-            }
+            },
+            setStyle: (el) => {
+                console.log(el);
+                app.currentCard.style = el;
+                updateCard();
+            },
         },
         watch: {
             stats: () => {

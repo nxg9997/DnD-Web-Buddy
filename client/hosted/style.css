@@ -49,3 +49,7 @@ body {
 .translate-vert-half {
     transform: translateY(15%);
 }
+
+.hide {
+    display: none;
+}

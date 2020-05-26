@@ -23,6 +23,7 @@ function updateCard() {
 
   var card = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
   var scale = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1.0;
+  var callback = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
   if (_canvas === null) _canvas = canvas;
   if (_ctx === null) _ctx = ctx;
   if (card === null) card = app.currentCard;
@@ -32,34 +33,116 @@ function updateCard() {
 
   _ctx.fillRect(0, 0, 409 * scale, 585 * scale);
 
-  _ctx.font = "".concat(20 * scale, "px Arial");
-  _ctx.fillStyle = 'black';
-  _ctx.textAlign = "center"; // - type
+  var art = new Image();
+  art.crossOrigin = 'anonymous';
+  if (card.art === '') art.src = '/hosted/img/white.jpg';else art.src = card.art;
+  art.addEventListener('load', function () {
+    var widthRatio = 1.0;
 
-  if (card.type !== null) _ctx.fillText(card.type, _canvas.width / 2, 20 * scale); // - name
-
-  _ctx.font = "".concat(50 * scale, "px Arial");
-  if (card.name !== null) _ctx.fillText(card.name, _canvas.width / 2, 100 * scale); // - top text
-
-  var split = createMultiline(card.topText); //card.topText.match(/.{1,30}/g);
-
-  _ctx.font = "".concat(20 * scale, "px Arial");
-
-  if (split !== null) {
-    for (var i = 0; i < split.length; i++) {
-      _ctx.fillText(split[i], _canvas.width / 2, 250 * scale + i * 20 * scale);
+    if (art.width > 409) {
+      widthRatio = 409 / art.width;
     }
-  } // - bottom text
 
+    _ctx.drawImage(art, 0, 100 * scale, art.width * widthRatio * scale, art.height * widthRatio * scale);
 
-  split = createMultiline(card.bottomText);
-  _ctx.font = "".concat(20 * scale, "px Arial");
+    var bg = new Image();
 
-  if (split !== null) {
-    for (var _i = 0; _i < split.length; _i++) {
-      _ctx.fillText(split[_i], _canvas.width / 2, 450 * scale + _i * 20 * scale);
+    switch (card.style) {
+      case 'Field':
+        bg.src = '/hosted/img/FieldCardBase.png';
+        break;
+
+      case 'Attack':
+        bg.src = '/hosted/img/AttackCardBase.png';
+        break;
+
+      case 'Object':
+        bg.src = '/hosted/img/ObjectCardBase.png';
+        break;
+
+      case 'Reaction':
+        bg.src = '/hosted/img/ReactionCardBase.png';
+        break;
+
+      case 'Spell':
+        bg.src = '/hosted/img/SpellCardBase.png';
+        break;
     }
-  }
+
+    bg.addEventListener('load', function () {
+      //console.log('loaded');
+      _ctx.drawImage(bg, 0, 0, 409 * scale, 585 * scale);
+
+      _ctx.font = "".concat(20 * scale, "px Arial");
+      _ctx.fillStyle = 'black';
+      _ctx.textAlign = "center"; // - type
+
+      if (card.type !== null) _ctx.fillText(card.type, _canvas.width / 6, 60 * scale); // - name
+
+      _ctx.font = "".concat(50 * scale, "px Arial");
+      if (card.name !== null) _ctx.fillText(card.name, _canvas.width / 2, 70 * scale); // - value
+
+      if (card.style === 'Attack') {
+        _ctx.font = "".concat(40 * scale, "px Arial");
+
+        _ctx.fillText(card.value, _canvas.width / 2, 325 * scale);
+      } else if (card.style === 'Object') {
+        _ctx.font = "".concat(40 * scale, "px Arial");
+
+        _ctx.fillText(card.value, 55 * scale, 540 * scale);
+      } // - top text
+
+
+      var yOffset = 0;
+
+      if (card.style === 'Attack') {
+        yOffset = 100;
+      }
+
+      var split = createMultiline(card.topText); //card.topText.match(/.{1,30}/g);
+
+      _ctx.font = "".concat(20 * scale, "px Arial");
+
+      if (split !== null) {
+        for (var i = 0; i < split.length; i++) {
+          _ctx.fillText(split[i], _canvas.width / 2, (315 + yOffset) * scale + i * 20 * scale);
+        }
+      } // - bottom text
+
+
+      split = createMultiline(card.bottomText);
+      _ctx.font = "".concat(20 * scale, "px Arial");
+
+      if (split !== null) {
+        for (var _i = 0; _i < split.length; _i++) {
+          _ctx.fillText(split[_i], _canvas.width / 2, (450 + yOffset / 2) * scale + _i * 20 * scale);
+        }
+      }
+
+      if (card.evolves) {
+        var evo = new Image();
+        evo.src = '/hosted/img/evolve_temp.png';
+        evo.addEventListener('load', function () {
+          _ctx.drawImage(evo, (409 - 75) * scale, (585 - 75) * scale, evo.width * scale / 2, evo.height * scale / 2);
+
+          if (callback) callback();
+        });
+      } else {
+        if (callback) callback();
+      }
+    });
+  });
+  art.addEventListener('error', function (err) {
+    console.log(err);
+    var snackbarContainer = document.querySelector('#snackbar');
+    var data = {
+      message: 'Art Source doesn\'t allow Cross-Origin',
+      timeout: 6000,
+      actionHandler: function actionHandler() {},
+      actionText: 'Undo'
+    };
+    snackbarContainer.MaterialSnackbar.showSnackbar(data);
+  });
 }
 
 function createMultiline(str) {
@@ -158,7 +241,11 @@ var Player = /*#__PURE__*/function () {
         name: 'Name',
         type: 'Type',
         topText: 'Top Text',
-        bottomText: 'Bottom Text'
+        bottomText: 'Bottom Text',
+        art: '/hosted/img/white.jpg',
+        style: 'Field',
+        value: '0',
+        evolves: false
       },
       user: 'unknown',
       dlbtnHref: '/builder.html',
@@ -211,7 +298,11 @@ var Player = /*#__PURE__*/function () {
           type: app.currentCard.type,
           topText: app.currentCard.topText,
           bottomText: app.currentCard.bottomText,
-          user: app.user
+          user: app.user,
+          art: app.currentCard.art,
+          style: app.currentCard.style,
+          value: app.currentCard.value,
+          evolves: app.currentCard.evolves
         };
         console.log(newCard);
         fetch('/card', {
@@ -280,6 +371,11 @@ var Player = /*#__PURE__*/function () {
       },
       downloadDeck: function downloadDeck() {
         buildDeck();
+      },
+      setStyle: function setStyle(el) {
+        console.log(el);
+        app.currentCard.style = el;
+        updateCard();
       }
     },
     watch: {

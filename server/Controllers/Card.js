@@ -12,6 +12,8 @@ const create = (request, response) => {
     if(req.body.bottomText) req.body.bottomText = `${req.body.bottomText}`;
     if(req.body.art) req.body.art = `${req.body.art}`;
     if(req.body.user) req.body.user = `${req.body.user}`;
+    if(req.body.style) req.body.style = `${req.body.style}`;
+    if(req.body.value) req.body.value = `${req.body.value}`;
 
     if(!req.body.name){
         return res.status(400).json({ error: 'Name field is required' });
@@ -26,6 +28,9 @@ const create = (request, response) => {
         bottomText: req.body.bottomText?req.body.bottomText:'',
         art: req.body.art?req.body.art:'',
         user: req.body.user?req.body.user:'',
+        style: req.body.style?req.body.style:'',
+        value: req.body.value?req.body.value:'',
+        evolves: req.body.evolves?req.body.evolves:false,
     };
 
     //console.log(cardData.name);
@@ -55,7 +60,9 @@ const update = (req, res) => {
         topText: req.body.topText?req.body.topText:'',
         bottomText: req.body.bottomText?req.body.bottomText:'',
         art: req.body.art?req.body.art:'',
-        user: req.body.user?req.body.user:'',
+        style: req.body.style?req.body.style:'',
+        value: req.body.value?req.body.value:'',
+        evolves: req.body.evolves?req.body.evolves:false,
     };
 
     Card.CardModel.updateOne({name: cardData.name}, cardData, (err) => {

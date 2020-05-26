@@ -29,27 +29,30 @@ function buildDeck() {
         cardCanvas.height = 585;
         fetch('/getCard', {method:'POST', headers:{"Content-Type":"application/json"}, body: JSON.stringify({name:deck[i].name})}).then((res)=>{
             res.json().then(data=>{
-                //console.log(data);
+                console.log(data);
                 //app.currentCard = data;
-                updateCard(cardCanvas, cardCanvas.getContext('2d'),data);
-                let img = cardCanvas.toDataURL('image/jpg');
-                let imgEl = new Image();
-                imgEl.src = img;
-                let blob = null;
-                cardCanvas.toBlob(result=>{
-                    zip.file(buildFileName(deck[i].count, deck[i].name), result, {base64: true});
-                    finishCount++;
-
-                    if(finishCount >= deck.length){
-                        createBack((backblob)=>{
-                            zip.file(`00 Back.jpg`, backblob, {base64: true});
-                            zip.generateAsync({type:"blob"}).then(content=>{
-                                saveAs(content, "deck.zip");
+                updateCard(cardCanvas, cardCanvas.getContext('2d'),data,1.0, () => {
+                    let img = cardCanvas.toDataURL('image/jpg');
+                    let imgEl = new Image();
+                    imgEl.src = img;
+                    let blob = null;
+                    cardCanvas.toBlob(result=>{
+                        zip.file(buildFileName(deck[i].count, deck[i].name), result, {base64: true});
+                        finishCount++;
+    
+                        if(finishCount >= deck.length){
+                            createBack((backblob)=>{
+                                zip.file(`00 Back.jpg`, backblob, {base64: true});
+                                zip.generateAsync({type:"blob"}).then(content=>{
+                                    saveAs(content, "deck.zip");
+                                });
                             });
-                        });
-                        
-                    }
-                },"image/jpg", 0.75);
+                            
+                        }
+                    },"image/jpg", 0.75);
+                });
+                //console.log(cardCanvas);
+                
                 
             });
         });

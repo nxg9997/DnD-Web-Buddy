@@ -63,6 +63,18 @@
                         <div class="mdl-cell--3-col black-border mdl-grid">
                             <div class="mdl-layout-spacer"></div>
                             <div class="mdl-cell--8-col">
+                                <button id="demo-menu-lower-left" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored full-wdth">
+                                    {{currentCard.style}}
+                                </button>
+
+                                <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="demo-menu-lower-left">
+                                    <li class="mdl-menu__item" v-on:click="setStyle('Field')">Field</li>
+                                    <li class="mdl-menu__item" v-on:click="setStyle('Attack')">Attack</li>
+                                    <li class="mdl-menu__item" v-on:click="setStyle('Object')">Object</li>
+                                    <li class="mdl-menu__item" v-on:click="setStyle('Reaction')">Reaction</li>
+                                    <li class="mdl-menu__item" v-on:click="setStyle('Spell')">Spell</li>
+                                </ul>
+
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                     <input class="mdl-textfield__input" type="text" id="cardName" v-model="currentCard.name" v-on:change="updateCard">
                                     <label class="mdl-textfield__label" for="cardName">Name</label>
@@ -82,10 +94,25 @@
                                     <input class="mdl-textfield__input" type="text" id="cardBottomText" v-model="currentCard.bottomText" v-on:change="updateCard">
                                     <label class="mdl-textfield__label" for="cardBottomText">Bottom Text</label>
                                 </div>
+
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input class="mdl-textfield__input" type="text" id="cardvalue" v-model="currentCard.value" v-on:change="updateCard">
+                                    <label class="mdl-textfield__label" for="cardValue">Value</label>
+                                </div>
+
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="cardEvolves">
+                                    <input type="checkbox" id="cardEvolves" class="mdl-checkbox__input" v-model="currentCard.evolves" v-on:change="updateCard">
+                                    <span class="mdl-checkbox__label">Evolves</span>
+                                </label>
     
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                     <input class="mdl-textfield__input" type="text" id="cardUser" v-model="user">
                                     <label class="mdl-textfield__label" for="cardUser">User</label>
+                                </div>
+
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input class="mdl-textfield__input" type="text" id="cardArt" v-model="currentCard.art" v-on:change="updateCard">
+                                    <label class="mdl-textfield__label" for="cardArt">Art URL</label>
                                 </div>
                             </div>
                             <div class="mdl-layout-spacer"></div>
@@ -129,6 +156,10 @@
                 </div>
 
             </main>
+            <div id="snackbar" class="mdl-js-snackbar mdl-snackbar">
+                <div class="mdl-snackbar__text"></div>
+                <button class="mdl-snackbar__action hide" type="button"></button>
+            </div>
     </div>
 </body>
 <script src="/hosted/socket.js"></script>
