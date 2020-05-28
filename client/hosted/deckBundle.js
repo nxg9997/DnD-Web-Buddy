@@ -20,7 +20,15 @@ var app;
         href: './deck.html'
       }],
       deck: [],
-      searchQuery: ''
+      searchQuery: '',
+      currRange: {
+        start: 0,
+        length: 6
+      },
+      cardDisplay: [],
+      optionsOpen: false,
+      allDecks: [],
+      deckName: ''
     },
     methods: {
       loadCardByName: function loadCardByName() {
@@ -60,6 +68,7 @@ var app;
         //console.log(name);
         app.deck.push(name.name);
         app.deck.sort();
+        drawCards('.deck-display');
       },
       removeFromDeck: function removeFromDeck(name) {
         for (var i = 0; i < app.deck.length; i++) {
@@ -72,6 +81,45 @@ var app;
       },
       downloadDeck: function downloadDeck() {
         buildDeck();
+      },
+      moveDisplay: function moveDisplay(start) {
+        updateDisplay(start);
+        drawCards();
+      },
+      toggleOptions: function toggleOptions() {
+        app.optionsOpen = !app.optionsOpen;
+      },
+      uploadDeck: function uploadDeck() {
+        fetch('/deck', {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            name: app.deckName,
+            cards: app.deck
+          })
+        }).then(function (res) {
+          res.json().then(function (data) {
+            //console.log(data);
+            app.getAllDecks();
+          });
+        });
+      },
+      getAllDecks: function getAllDecks() {
+        var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+        fetch('/getDeck', {
+          method: 'GET'
+        }).then(function (res) {
+          res.json().then(function (data) {
+            console.log(data);
+            app.allDecks = data;
+
+            if (callback !== null) {
+              callback();
+            }
+          });
+        });
       }
     },
     watch: {},
@@ -80,18 +128,28 @@ var app;
         //console.log('exists');
         drawCards();
       }
+
+      drawCards('.deck-display', 0.1);
     }
   });
-  getAllCards();
+  getAllCards(function () {
+    updateDisplay();
+    drawCards();
+  });
 })();
 
 function getAllCards() {
+  var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   fetch('/getCard', {
     method: 'GET'
   }).then(function (res) {
     res.json().then(function (data) {
       console.log(data);
       app.allCards = data;
+
+      if (callback !== null) {
+        callback();
+      }
     });
   });
 }
@@ -100,9 +158,11 @@ function getAllCards() {
 var cardsDrawn = false;
 
 function drawCards() {
-  if (cardsDrawn) return;
+  var src = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '.card-display';
+  var scale = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0.35;
+  //if(false) return;
   cardsDrawn = true;
-  var canvases = document.querySelectorAll('canvas'); //console.log(canvases);
+  var canvases = document.querySelectorAll(src); //console.log(canvases);
 
   var _loop = function _loop(i) {
     //console.log(canvases[i].innerHTML);
@@ -118,13 +178,21 @@ function drawCards() {
       res.json().then(function (data) {
         //console.log(data);
         //app.currentCard = data;
-        updateCard(canvases[i], canvases[i].getContext('2d'), data, 0.35);
+        updateCard(canvases[i], canvases[i].getContext('2d'), data, scale);
       });
     }); //updateCard(canvases[i], canvases[i].getContext('2d'),)
   };
 
   for (var i = 0; i < canvases.length; i++) {
     _loop(i);
+  }
+}
+
+function findInAllCards(name) {
+  for (var i = 0; i < app.allCards.length; i++) {
+    if (app.allCards[i].name === name) {
+      return app.allCards[i];
+    }
   }
 }
 
@@ -233,6 +301,19 @@ function buildFileName(num, name) {
   }
 
   return str + "x " + name + '.jpg';
+}
+
+function updateDisplay() {
+  var start = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+  var length = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 8;
+  app.currRange.start = start;
+  app.currRange.length = length;
+  app.cardDisplay = [];
+
+  for (var i = start; i < start + length; i++) {
+    if (i >= app.allCards.length) break;
+    app.cardDisplay.push(app.allCards[i]);
+  }
 }
 "use strict";
 

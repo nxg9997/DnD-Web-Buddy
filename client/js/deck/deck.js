@@ -1,10 +1,10 @@
 let cardsDrawn = false;
 
-function drawCards() {
-    if(cardsDrawn) return;
+function drawCards(src='.card-display',scale=0.35) {
+    //if(false) return;
 
     cardsDrawn = true;
-    let canvases = document.querySelectorAll('canvas');
+    let canvases = document.querySelectorAll(src);
     //console.log(canvases);
     for(let i = 0; i < canvases.length; i++){
         //console.log(canvases[i].innerHTML);
@@ -12,10 +12,18 @@ function drawCards() {
             res.json().then(data=>{
                 //console.log(data);
                 //app.currentCard = data;
-                updateCard(canvases[i], canvases[i].getContext('2d'),data,0.35);
+                updateCard(canvases[i], canvases[i].getContext('2d'),data,scale);
             });
         });
         //updateCard(canvases[i], canvases[i].getContext('2d'),)
+    }
+}
+
+function findInAllCards(name) {
+    for(let i = 0; i < app.allCards.length; i++){
+        if(app.allCards[i].name === name){
+            return app.allCards[i];
+        }
     }
 }
 
@@ -112,4 +120,17 @@ function buildFileName(num,name){
     }
 
     return str + "x " + name + '.jpg';
+}
+
+function updateDisplay(start=0,length=8) {
+    app.currRange.start = start;
+    app.currRange.length = length;
+
+    app.cardDisplay = [];
+
+    for(let i = start; i < start + length; i++){
+        if(i >= app.allCards.length) break;
+
+        app.cardDisplay.push(app.allCards[i]);
+    }
 }

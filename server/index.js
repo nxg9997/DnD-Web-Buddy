@@ -70,6 +70,29 @@ app.post('/deleteCard', (req, res) => {
     controllers.Card.deleteCard(req,res);
 });
 
+app.post('/deck', (req, res) => {
+    console.log(req.body);
+    controllers.Deck.create(req,res);
+});
+
+app.post('/getDeck', (req, res) => {
+    controllers.Deck.getDeckByName(req,res,(data)=>{
+        //data.card.blah
+        res.send(data.card);
+    });
+});
+
+app.get('/getDeck', (req, res) => {
+    controllers.Deck.getAllDecks(req,res,(data) => {
+        console.log(data);
+        res.send(data);
+    });
+});
+
+app.post('/deleteDeck', (req, res) => {
+    controllers.Deck.deleteDeck(req,res);
+});
+
 /*app.get('/builder', (req, res) => {
     res.sendfile('../client/builder.html');
 });*/

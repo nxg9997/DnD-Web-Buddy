@@ -23,6 +23,14 @@ var app;
             ],
             deck: [],
             searchQuery: '',
+            currRange: {
+                start: 0,
+                length: 6,
+            },
+            cardDisplay: [],
+            optionsOpen: false,
+            allDecks: [],
+            deckName: '',
         },
         methods: {
             loadCardByName: () => {
@@ -47,6 +55,7 @@ var app;
                 //console.log(name);
                 app.deck.push(name.name);
                 app.deck.sort();
+                drawCards('.deck-display');
             },
             removeFromDeck: (name) => {
                 for(let i = 0; i < app.deck.length; i++){
@@ -60,6 +69,32 @@ var app;
             downloadDeck: () => {
                 buildDeck();
             },
+            moveDisplay: (start) => {
+                updateDisplay(start);
+                drawCards();
+            },
+            toggleOptions: () => {
+                app.optionsOpen = !app.optionsOpen;
+            },
+            uploadDeck: () => {
+                fetch('/deck', {method:'POST', headers:{"Content-Type":"application/json"}, body: JSON.stringify({name:app.deckName,cards:app.deck})}).then((res)=>{
+                    res.json().then(data=>{
+                        //console.log(data);
+                        app.getAllDecks();
+                    });
+                });
+            },
+            getAllDecks: (callback=null) => {
+                fetch('/getDeck', {method:'GET'}).then(res=>{
+                    res.json().then(data=>{
+                        console.log(data);
+                        app.allDecks = data;
+                        if(callback !== null){
+                            callback();
+                        }
+                    });
+                });
+            }
         },
         watch: {
             
@@ -69,17 +104,24 @@ var app;
                 //console.log('exists');
                 drawCards();
             }
+            drawCards('.deck-display',0.1);
         }
     });
 
-    getAllCards();
+    getAllCards(() => {
+        updateDisplay();
+        drawCards();
+    });
 })();
 
-function getAllCards() {
+function getAllCards(callback=null) {
     fetch('/getCard', {method:'GET'}).then(res=>{
         res.json().then(data=>{
             console.log(data);
             app.allCards = data;
+            if(callback !== null){
+                callback();
+            }
         });
     });
 }
