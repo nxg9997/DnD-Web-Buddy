@@ -227,6 +227,10 @@ function updateCard() {
       case 'Spell':
         bg.src = '/hosted/img/SpellCardBase.png';
         break;
+
+      default:
+        bg.src = '/hosted/img/FieldCardBase.png';
+        break;
     }
 
     bg.addEventListener('load', function () {

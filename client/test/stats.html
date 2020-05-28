@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>DnD Web Buddy</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <!--link rel="stylesheet" href="/hosted/styles/bootstrap-dark.css"-->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+
+    <link rel="stylesheet" href="/hosted/style.css">
+</head>
+<body class="bg-secondary">
+    <div id='app'>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">{{title}}</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+          
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item active" v-for="l in links">
+                  <a class="nav-link" v-bind:href="l.href">{{l.label}}</a>
+                </li>
+              </ul>
+            </div>
+        </nav>
+        <div class="m-2">
+            <div class="center-text">
+                <h2>Stat Tracker</h2>
+            </div>
+            <div class="container text-light">
+                <div class="row">
+                    <!--Player 1 Section-->
+                    <div class="col-sm rounded-lg bg-dark p-2">
+                        <div class="form-group row">
+                            <label for="p1Name" class="col-sm-5 col-form-label">Player 1:</label>
+                            <div class="col-sm-5">
+                            <input type="text" class="form-control" id="p1Name" v-model="stats.player1.name" v-on:change="emitChange">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="p1Hp" class="col-sm-5 col-form-label">HP:</label>
+                            <div class="col-sm-5">
+                            <input type="text" class="form-control" id="p1Hp" v-model="stats.player1.hp" v-on:change="emitChange">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="p1Atk" class="col-sm-5 col-form-label">Attack:</label>
+                            <div class="col-sm-5">
+                            <input type="text" class="form-control" id="p1Atk" v-model="stats.player1.atk" v-on:change="emitChange">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="p1Def" class="col-sm-5 col-form-label">Defense:</label>
+                            <div class="col-sm-5">
+                            <input type="text" class="form-control" id="p1Def" v-model="stats.player1.def" v-on:change="emitChange">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="p1AtkMult" class="col-sm-5 col-form-label">Attack Stage:</label>
+                            <div class="col-sm-5">
+                            <input type="text" class="form-control" id="p1AtkMult" v-model="stats.player1.atkMult" v-on:change="emitChange">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="p1DefMult" class="col-sm-5 col-form-label">Defense Stage:</label>
+                            <div class="col-sm-5">
+                            <input type="text" class="form-control" id="p1DefMult" v-model="stats.player1.defMult" v-on:change="emitChange">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="p1Damage" class="col-sm-5 col-form-label">Damage:</label>
+                            <div class="col-sm-5">
+                            <input type="text" class="form-control" id="p1Damage" v-model="stats.player1.extraDmg" v-on:change="emitChange">
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center flex-fill">
+                            <button type="button" class="btn btn-info mx-2" v-on:click="attackFromP1">Attack P2</button>
+                            <button type="button" class="btn btn-info mx-2" v-on:click="attackSummon(stats.player1)">Attack Summon</button>
+                        </div>
+                        
+                    </div>
+                    <!--Middle Section-->
+                    <div class="col-sm rounded-lg bg-dark p-2 mx-2">
+                        
+                        <div class="form-group row">
+                            <label for="connect" class="col-sm-2 col-form-label">Room:</label>
+                            <div class="col-sm-4">
+                            <input type="text" class="form-control" id="connect" v-model="roomID" v-on:change="emitChange">
+                            </div>
+                            <button type="button" class="btn btn-info col-sm-4" v-on:click="changeRoom">Connect!</button>
+                        </div>
+                        <!--Summon-->
+                        <div class="border border-info rounded-lg p-2">
+                            <h4>Summon</h4>
+                            <div class="form-group row">
+                                <label for="summonHp" class="col-sm-5 col-form-label">HP:</label>
+                                <div class="col-sm-5">
+                                <input type="text" class="form-control" id="summonHp" v-model="stats.summon.hp">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="summonAtk" class="col-sm-5 col-form-label">Attack:</label>
+                                <div class="col-sm-5">
+                                <input type="text" class="form-control" id="summonAtk" v-model="stats.summon.atk" v-on:change="emitChange">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="summonDef" class="col-sm-5 col-form-label">Defense:</label>
+                                <div class="col-sm-5">
+                                <input type="text" class="form-control" id="summonDef" v-model="stats.summon.def" v-on:change="emitChange">
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center flex-fill">
+                                <button type="button" class="btn btn-info mx-2" v-on:click="summonAttack(stats.player1)">Attack P1</button>
+                                <button type="button" class="btn btn-info mx-2" v-on:click="summonAttack(stats.player2)">Attack P2</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Player 2 Section-->
+                    <div class="col-sm rounded-lg bg-dark p-2">
+                        <div class="form-group row">
+                            <label for="p2Name" class="col-sm-5 col-form-label">Player 2:</label>
+                            <div class="col-sm-5">
+                            <input type="text" class="form-control" id="p2Name" v-model="stats.player2.name" v-on:change="emitChange">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="p2Hp" class="col-sm-5 col-form-label">HP:</label>
+                            <div class="col-sm-5">
+                            <input type="text" class="form-control" id="p2Hp" v-model="stats.player2.hp" v-on:change="emitChange">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="p2Atk" class="col-sm-5 col-form-label">Attack:</label>
+                            <div class="col-sm-5">
+                            <input type="text" class="form-control" id="p2Atk" v-model="stats.player2.atk" v-on:change="emitChange">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="p2Def" class="col-sm-5 col-form-label">Defense:</label>
+                            <div class="col-sm-5">
+                            <input type="text" class="form-control" id="p2Def" v-model="stats.player2.def" v-on:change="emitChange">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="p2AtkMult" class="col-sm-5 col-form-label">Attack Stage:</label>
+                            <div class="col-sm-5">
+                            <input type="text" class="form-control" id="p2AtkMult" v-model="stats.player2.atkMult" v-on:change="emitChange">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="p2DefMult" class="col-sm-5 col-form-label">Defense Stage:</label>
+                            <div class="col-sm-5">
+                            <input type="text" class="form-control" id="p2DefMult" v-model="stats.player2.defMult" v-on:change="emitChange">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="p2Damage" class="col-sm-5 col-form-label">Damage:</label>
+                            <div class="col-sm-5">
+                            <input type="text" class="form-control" id="p2Damage" v-model="stats.player2.extraDmg" v-on:change="emitChange">
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center flex-fill">
+                            <button type="button" class="btn btn-info mx-2" v-on:click="attackFromP2">Attack P1</button>
+                            <button type="button" class="btn btn-info mx-2" v-on:click="attackSummon(stats.player2)">Attack Summon</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/hosted/socket.js"></script>
+<script src="/hosted/statsBundle.js"></script>
+</html>

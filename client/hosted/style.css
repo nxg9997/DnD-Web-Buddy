@@ -1,5 +1,5 @@
 body {
-    background: grey;
+    /*background: grey;*/
 }
 
 .center-text {
@@ -56,4 +56,12 @@ body {
 
 .top-line {
     border-top: 1px solid black;
+}
+
+.small-padding {
+    padding: 5%;
+}
+
+.right-text {
+    text-align: right;
 }
