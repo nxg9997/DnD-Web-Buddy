@@ -78,21 +78,23 @@ class Player {
             stats: {
                 player1: new Player('Player 1'),
                 player2: new Player('Player 2'),
+                summon: new Player('Summon'),
             },
             roomID: '',
             atkMult: 0.25,
             defMult: 0.25,
+            searchQuery: '',
         },
         methods: {
             emitChange: () => {
                 socket.emit('stat update', app.stats.player1.toString() + "?" + app.stats.player2.toString());
             },
             attackFromP1: () => {
-                attack(app.stats.player1, app.stats.player2);
+                attackV2(app.stats.player1, app.stats.player2);
                 
             },
             attackFromP2: () => {
-                attack(app.stats.player2, app.stats.player1);
+                attackV2(app.stats.player2, app.stats.player1);
             },
             changeRoom: () => {
                 socket.emit('room change', app.roomID);
@@ -144,6 +146,15 @@ class Player {
                 app.currentCard.name = name;
                 app.loadCardByName();
             },
+            searchForCard: () => {
+                fetch('/getCard', {method:'POST', headers:{"Content-Type":"application/json"}, body: JSON.stringify({name:app.searchQuery})}).then((res)=>{
+                    res.json().then(data=>{
+                        //console.log(data);
+                        app.allCards = [data];
+                        //updateCard();
+                    });
+                });
+            },
             deleteCard: () => {
                 fetch('/deleteCard', {method:'POST', headers:{"Content-Type":"application/json"}, body: JSON.stringify({name: app.currentCard.name})}).then((res)=>{
                     res.json().then(data=>{
@@ -174,6 +185,12 @@ class Player {
                 app.currentCard.style = el;
                 updateCard();
             },
+            summonAttack: (player) => {
+                attackV2(app.stats.summon, player);
+            },
+            attackSummon: (player) => {
+                attackV2(player, app.stats.summon);
+            }
         },
         watch: {
             stats: () => {

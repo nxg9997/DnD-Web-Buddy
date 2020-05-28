@@ -24,3 +24,17 @@ function attack(p1,p2){
 
     app.emitChange();
 }
+
+function attackV2(p1,p2){
+    // dmg = (((2 * L / 5 + 2) * P * A / D) / 50 + 2) * modifier
+    let L = 1; // level
+    let aM = 1 + (0.5 * parseFloat(p1.atkMult));
+    let dM = 1 + (0.5 * parseFloat(p2.defMult));
+    let dmg = ((parseFloat(p1.extraDmg) * parseFloat(p1.atk) * aM / parseFloat(p2.def) * dM) / 1 + 2);
+
+    if(dmg < 0) dmg = 0;
+
+    p2.hp = Math.round(parseFloat(p2.hp) - dmg);
+
+    app.emitChange();
+}

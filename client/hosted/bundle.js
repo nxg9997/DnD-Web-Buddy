@@ -251,21 +251,23 @@ var Player = /*#__PURE__*/function () {
       dlbtnHref: '/builder.html',
       stats: {
         player1: new Player('Player 1'),
-        player2: new Player('Player 2')
+        player2: new Player('Player 2'),
+        summon: new Player('Summon')
       },
       roomID: '',
       atkMult: 0.25,
-      defMult: 0.25
+      defMult: 0.25,
+      searchQuery: ''
     },
     methods: {
       emitChange: function emitChange() {
         socket.emit('stat update', app.stats.player1.toString() + "?" + app.stats.player2.toString());
       },
       attackFromP1: function attackFromP1() {
-        attack(app.stats.player1, app.stats.player2);
+        attackV2(app.stats.player1, app.stats.player2);
       },
       attackFromP2: function attackFromP2() {
-        attack(app.stats.player2, app.stats.player1);
+        attackV2(app.stats.player2, app.stats.player1);
       },
       changeRoom: function changeRoom() {
         socket.emit('room change', app.roomID);
@@ -339,6 +341,22 @@ var Player = /*#__PURE__*/function () {
         app.currentCard.name = name;
         app.loadCardByName();
       },
+      searchForCard: function searchForCard() {
+        fetch('/getCard', {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            name: app.searchQuery
+          })
+        }).then(function (res) {
+          res.json().then(function (data) {
+            //console.log(data);
+            app.allCards = [data]; //updateCard();
+          });
+        });
+      },
       deleteCard: function deleteCard() {
         fetch('/deleteCard', {
           method: 'POST',
@@ -376,6 +394,12 @@ var Player = /*#__PURE__*/function () {
         console.log(el);
         app.currentCard.style = el;
         updateCard();
+      },
+      summonAttack: function summonAttack(player) {
+        attackV2(app.stats.summon, player);
+      },
+      attackSummon: function attackSummon(player) {
+        attackV2(player, app.stats.summon);
       }
     },
     watch: {
@@ -425,6 +449,18 @@ function updateStats(str) {
 function attack(p1, p2) {
   console.log("attack!");
   var dmg = parseInt(p1.atk) * (parseFloat(p1.atkMult) * 0.25 + 1) + parseInt(p1.extraDmg) - parseInt(p2.def) * (parseFloat(p2.defMult) * 0.25 + 1);
+  if (dmg < 0) dmg = 0;
+  p2.hp = Math.round(parseFloat(p2.hp) - dmg);
+  app.emitChange();
+}
+
+function attackV2(p1, p2) {
+  // dmg = (((2 * L / 5 + 2) * P * A / D) / 50 + 2) * modifier
+  var L = 1; // level
+
+  var aM = 1 + 0.5 * parseFloat(p1.atkMult);
+  var dM = 1 + 0.5 * parseFloat(p2.defMult);
+  var dmg = parseFloat(p1.extraDmg) * parseFloat(p1.atk) * aM / parseFloat(p2.def) * dM / 1 + 2;
   if (dmg < 0) dmg = 0;
   p2.hp = Math.round(parseFloat(p2.hp) - dmg);
   app.emitChange();

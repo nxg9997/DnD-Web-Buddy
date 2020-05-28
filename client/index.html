@@ -20,7 +20,7 @@
             <header class="mdl-layout__header mdl-layout__header--transparent">
               <div class="mdl-layout__header-row">
                 <!-- Title -->
-                <span class="mdl-layout-title">{{title}}</span>
+                <span class="mdl-layout-title">DnD - Stat Tracker</span>
                 <!-- Add spacer, to align navigation to the right -->
                 <div class="mdl-layout-spacer"></div>
                 <!-- Navigation >
@@ -33,16 +33,13 @@
               </div>
             </header>
             <div class="mdl-layout__drawer">
-              <span class="mdl-layout-title">{{title}}</span>
+              <span class="mdl-layout-title">DnD Buddy</span>
               <nav class="mdl-navigation">
                 <a v-for="link in links" class="mdl-navigation__link" v-bind:href="link.href">{{link.label}}</a>
               </nav>
             </div>
             <main class="mdl-layout__content">
                 <div class="mdl-grid">
-                    <div class="mdl-cell--12-col">
-                        <h1 class="center-text">DnD - Stat Tracker</h1>
-                    </div>
                     <div class="mdl-cell--12-col mdl-grid">
                         <div class="mdl-layout-spacer"></div>
                         <div class="mdl-cell--3-col small-margin">
@@ -83,13 +80,13 @@
 
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="player1atkmult" v-model="stats.player1.atkMult" v-on:change="emitChange">
-                                <label class="mdl-textfield__label" for="player1atkmult">Attack Multiplier</label>
+                                <label class="mdl-textfield__label" for="player1atkmult">Attack Stage</label>
                                 <span class="mdl-textfield__error">Input is not a number!</span>
                             </div>
 
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="player1defmult" v-model="stats.player1.defMult" v-on:change="emitChange">
-                                <label class="mdl-textfield__label" for="player1defmult">Defense Multiplier</label>
+                                <label class="mdl-textfield__label" for="player1defmult">Defense Stage</label>
                                 <span class="mdl-textfield__error">Input is not a number!</span>
                             </div>
 
@@ -111,9 +108,41 @@
                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored small-margin" v-on:click="attackFromP2">
                                 <- Attack <-
                             </button>
-                            <p>Current Attack Multiplier: <strong>{{atkMult}}</strong></p>
+
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent small-margin" v-on:click="attackSummon(stats.player1)">
+                                -> Summon ->
+                            </button>
+
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored small-margin" v-on:click="attackSummon(stats.player2)">
+                                <- Summon <-
+                            </button>
+                            <!--p>Current Attack Multiplier: <strong>{{atkMult}}</strong></p>
                             <p>Current Defense Multiplier: <strong>{{defMult}}</strong></p>
-                            <p><strong>1 Mult : atk/def Multiplier</strong></p>
+                            <p><strong>1 Mult : atk/def Multiplier</strong></p-->
+                            <p><strong>Damage Calculator V2</strong><br>Multipliers are replaced by Pokemon-style Stages</p>
+
+                            <div class="top-line">
+                                <p><strong>Summon</strong></p>
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input class="mdl-textfield__input" type="text" id="sHP" v-model="stats.summon.hp" v-on:change="emitChange">
+                                    <label class="mdl-textfield__label" for="sHP">HP</label>
+                                </div>
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input class="mdl-textfield__input" type="text" id="sAtk" v-model="stats.summon.atk" v-on:change="emitChange">
+                                    <label class="mdl-textfield__label" for="sAtk">Attack</label>
+                                </div>
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input class="mdl-textfield__input" type="text" id="sDef" v-model="stats.summon.def" v-on:change="emitChange">
+                                    <label class="mdl-textfield__label" for="sDef">Defense</label>
+                                </div>
+                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored small-margin" v-on:click="summonAttack(stats.player1)">
+                                    <-
+                                </button>
+    
+                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent small-margin" v-on:click="summonAttack(stats.player2)">
+                                    ->
+                                </button>
+                            </div>
                         </div>
                         <div class="mdl-layout-spacer"></div>
                     </div>
@@ -146,13 +175,13 @@
 
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="player2atkmult" v-model="stats.player2.atkMult" v-on:change="emitChange">
-                                <label class="mdl-textfield__label" for="player2atkmult">Attack Multiplier</label>
+                                <label class="mdl-textfield__label" for="player2atkmult">Attack Stage</label>
                                 <span class="mdl-textfield__error">Input is not a number!</span>
                             </div>
 
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="player2defmult" v-model="stats.player2.defMult" v-on:change="emitChange">
-                                <label class="mdl-textfield__label" for="player2defmult">Defense Multiplier</label>
+                                <label class="mdl-textfield__label" for="player2defmult">Defense Stage</label>
                                 <span class="mdl-textfield__error">Input is not a number!</span>
                             </div>
 
