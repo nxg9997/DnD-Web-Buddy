@@ -6,9 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./server/index.js",
-    "watch": "babel --watch ./client/js --out-file ./client/hosted/bundle.js",
+    "watchStats": "babel --watch ./client/js/stats --out-file ./client/hosted/statsBundle.js",
+    "watchBuilder": "babel --watch ./client/js/builder --out-file ./client/hosted/builderBundle.js",
+    "watchDeck": "babel --watch ./client/js/deck ./client/js/builder/builder.js --out-file ./client/hosted/deckBundle.js",
     "nodemon": "nodemon --watch ./server ./server/index.js",
-    "cstart": "concurrently \"npm:nodemon\" \"npm:watch\""
+    "cstart": "concurrently \"npm:nodemon\" \"npm:watchStats\" \"npm:watchBuilder\" \"npm:watchDeck\""
   },
   "repository": {
     "type": "git",
