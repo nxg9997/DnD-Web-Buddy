@@ -123,38 +123,40 @@
                                     <input class="mdl-textfield__input" type="text" id="cardArt" v-model="currentCard.art" v-on:change="updateCard">
                                     <label class="mdl-textfield__label" for="cardArt">Art URL</label>
                                 </div>
+
+                                <div class="mdl-cell--12-col mdl-grid">
+                                    <div class="mdl-layout-spacer"></div>
+                                    <div class="mdl-cell--4-col center-text small-margin">
+                                        <button id="downBtn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent small-margin" v-on:click="downloadCard">
+                                            <i class="material-icons mdl-list__item-icon">get_app</i>
+                                        </button>
+                                        <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="downBtn">
+                                            Download <strong>{{currentCard.name}}</strong>
+                                        </div>
+                                    </div>
+                                    <div class="mdl-layout-spacer"></div>
+                                    <div class="mdl-cell--4-col center-text small-margin">
+                                        <button id="saveBtn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored small-margin" v-on:click="saveCardtoDB">
+                                            <i class="material-icons mdl-list__item-icon">backup</i>
+                                        </button>
+                                        <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="saveBtn">
+                                            Upload <strong>{{currentCard.name}}</strong>
+                                        </div>
+                                    </div>
+                                    <div class="mdl-layout-spacer"></div>
+                                    <div class="mdl-cell--4-col center-text small-margin">
+                                        <button id="deleteBtn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button small-margin color-red" v-on:click="deleteCard">
+                                            <i class="material-icons mdl-list__item-icon">delete</i>
+                                        </button>
+                                        <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="deleteBtn">
+                                            Delete <strong>{{currentCard.name}}</strong>
+                                        </div>
+                                    </div>
+                                    <div class="mdl-layout-spacer"></div>
+                                </div>
                             </div>
                             <div class="mdl-layout-spacer"></div>
-                            <div class="mdl-cell--12-col mdl-grid">
-                                <div class="mdl-layout-spacer"></div>
-                                <div class="mdl-cell--4-col center-text">
-                                    <button id="downBtn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent small-margin" v-on:click="downloadCard">
-                                        <i class="material-icons mdl-list__item-icon">get_app</i>
-                                    </button>
-                                    <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="downBtn">
-                                        Download <strong>{{currentCard.name}}</strong>
-                                    </div>
-                                </div>
-                                <div class="mdl-layout-spacer"></div>
-                                <div class="mdl-cell--4-col center-text">
-                                    <button id="saveBtn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored small-margin" v-on:click="saveCardtoDB">
-                                        <i class="material-icons mdl-list__item-icon">backup</i>
-                                    </button>
-                                    <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="saveBtn">
-                                        Upload <strong>{{currentCard.name}}</strong>
-                                    </div>
-                                </div>
-                                <div class="mdl-layout-spacer"></div>
-                                <div class="mdl-cell--4-col center-text">
-                                    <button id="deleteBtn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button small-margin color-red" v-on:click="deleteCard">
-                                        <i class="material-icons mdl-list__item-icon">delete</i>
-                                    </button>
-                                    <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="deleteBtn">
-                                        Delete <strong>{{currentCard.name}}</strong>
-                                    </div>
-                                </div>
-                                <div class="mdl-layout-spacer"></div>
-                            </div>
+                            
                         </div>
                         <div class="mdl-layout-spacer"></div>
                         <div class="mdl-cell--5-col black-border center-text">
