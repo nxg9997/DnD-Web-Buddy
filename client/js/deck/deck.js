@@ -52,7 +52,7 @@ function buildDeck() {
                             createBack((backblob)=>{
                                 zip.file(`00 Back.jpg`, backblob, {base64: true});
                                 zip.generateAsync({type:"blob"}).then(content=>{
-                                    saveAs(content, "deck.zip");
+                                    saveAs(content, `${app.deckName}.zip`);
                                 });
                             });
                             

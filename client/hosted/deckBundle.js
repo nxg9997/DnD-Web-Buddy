@@ -28,7 +28,7 @@ var app;
       cardDisplay: [],
       optionsOpen: false,
       allDecks: [],
-      deckName: ''
+      deckName: 'deck'
     },
     methods: {
       loadCardByName: function loadCardByName() {
@@ -273,7 +273,7 @@ function buildDeck() {
                 zip.generateAsync({
                   type: "blob"
                 }).then(function (content) {
-                  saveAs(content, "deck.zip");
+                  saveAs(content, "".concat(app.deckName, ".zip"));
                 });
               });
             }

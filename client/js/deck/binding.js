@@ -32,7 +32,7 @@ var app;
             cardDisplay: [],
             optionsOpen: false,
             allDecks: [],
-            deckName: '',
+            deckName: 'deck',
         },
         methods: {
             loadCardByName: () => {
