@@ -7,62 +7,97 @@
     <title>DnD Web Buddy</title>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.orange-cyan.min.css">
-    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <!--link rel="stylesheet" href="/hosted/styles/bootstrap-dark.css"-->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+
+    <script src="https://kit.fontawesome.com/cb7f0b3eae.js" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="/hosted/style.css">
 </head>
-<body>
-    <div id="app">
-        <div class="demo-layout-transparent mdl-layout mdl-js-layout">
-            <header class="mdl-layout__header mdl-layout__header--transparent">
-              <div class="mdl-layout__header-row">
-                <!-- Title -->
-                <span class="mdl-layout-title">{{title}}</span>
-                <!-- Add spacer, to align navigation to the right -->
-                <div class="mdl-layout-spacer"></div>
-                <!-- Navigation >
-                <nav class="mdl-navigation">
-                  <a class="mdl-navigation__link" href="">Link</a>
-                  <a class="mdl-navigation__link" href="">Link</a>
-                  <a class="mdl-navigation__link" href="">Link</a>
-                  <a class="mdl-navigation__link" href="">Link</a>
-                </nav-->
-              </div>
-            </header>
-            <div class="mdl-layout__drawer">
-              <span class="mdl-layout-title">{{title}}</span>
-              <nav class="mdl-navigation">
-                <a v-for="link in links" class="mdl-navigation__link" v-bind:href="link.href">{{link.label}}</a>
-              </nav>
+<body class="bg-secondary">
+    <div id='app'>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">{{title}}</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                <li class="nav-item active" v-for="l in links">
+                    <a class="nav-link" v-bind:href="l.href">{{l.label}}</a>
+                </li>
+                </ul>
             </div>
-            <main class="mdl-layout__content">
-                <div class="mdl-grid">
-                    <div class="mdl-cell--12-col center-text">
-                        <h2>DnD - Deck Builder</h2>
-                    </div>
-                    <div class="mdl-cell--8-col black-border display-flex flex-wrap">
-                        <div v-for="c in allCards" class="deck-canvas small-margin center-text">
-                            <canvas height="100" width="100" v-on:click="addToDeck(c)">{{c.name}}</canvas>
+        </nav>
+        <div class="m-2">
+            <div class="center-text">
+                <h2>Deck Builder</h2>
+            </div>
+            <div class="container text-light">
+                <div class="col">
+                    <div class="container row bg-dark rounded-lg px-0">
+                        <div class="overflow-auto col-sm px-0" v-bind:class="{'d-none': optionsOpen }">
+                            <ul class="list-group list-group-horizontal text-dark">
+                                <li class="list-group-item" v-for="c in deck" v-on:click="removeFromDeck(c)">{{c}}</li>
+                            </ul>
                         </div>
-                    </div>
-                    <div class="mdl-layout-spacer"></div>
-                    <div class="mdl-cell--3-col black-border display-flex flex-col">
-                        <button id="downBtn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent full-width" v-on:click="downloadDeck">
-                            <i class="material-icons mdl-list__item-icon">get_app</i>
+                        
+                        <div class="col-sm pr-0 container row" v-bind:class="{'d-none': !optionsOpen }">
+                            <!--Decks-->
+                            <div class="overflow-auto col-sm">
+                                <ul class="list-group list-group-horizontal text-dark">
+                                    <li class="list-group-item" v-for="d in allDecks" v-on:click="loadDeck(d.name)">{{d.name}}</li>
+                                </ul>
+                            </div>
+                            <div class="col-sm-5 container column d-flex flex-col justify-content-center m-2">
+                                <div class="form-group row">
+                                    <label for="deckName" class="col-sm-2 col-form-label">Name:</label>
+                                    <div class="col-sm">
+                                        <input type="text" class="form-control" id="deckName" v-model="deckName">
+                                    </div>
+                                </div>
+                                <div class="container row d-flex justify-content-center">
+                                    <button type="button" class="col-sm-2 btn btn-primary btn-sm mx-2" v-on:click="downloadDeck" data-toggle="tooltip" title="Download">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                    <button type="button" class="col-sm-2 btn btn-success btn-sm mx-2" v-on:click="uploadDeck" data-toggle="tooltip" title="Upload">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </button>
+                                    <button type="button" class="col-sm-2 btn btn-danger btn-sm mx-2" v-on:click="deleteDeck" data-toggle="tooltip" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <!--div v-for="c in deck" class="col-sm">
+                            <canvas class="my-2 deck-display">{{c}}</canvas>
+                        </div-->
+                        <button type="button" class="col-sm-1 btn btn-primary btn-lg btn-block float-right" v-on:click="toggleOptions">
+                            <i class="fas fa-bars"></i>
                         </button>
-                        <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="downBtn">
-                            Download Deck
+                    </div>
+                    <div class="container row bg-dark rounded-lg mt-2 p-0">
+                        <button type="button" class="col-sm-1 btn btn-outline-primary btn-lg btn-block" v-bind:class="{disabled: currRange.start === 0}" :disabled="currRange.start === 0" v-on:click="moveDisplay(currRange.start - 8)"><</button>
+                        <div class="col-sm d-flex flex-wrap">
+                            <canvas class="col-sm-3 my-2 card-display" v-for="c in cardDisplay" v-on:click="addToDeck(c)">{{c.name}}</canvas>
+                            <!--div v-for="c in allCards" class="deck-canvas small-margin center-text">
+                                <canvas height="100" width="100" v-on:click="addToDeck(c)">{{c.name}}</canvas>
+                            </div-->
                         </div>
-                        <span class="mdl-chip mdl-chip--deletable" v-for="c in deck">
-                            <span class="mdl-chip__text">{{c}}</span>
-                            <button type="button" class="mdl-chip__action float-right translate-vert-half" v-on:click="removeFromDeck(c)"><i class="material-icons">cancel</i></button>
-                        </span>
+                        <button type="button" class="col-sm-1 btn btn-outline-primary btn-lg btn-block" v-bind:class="{disabled: (currRange.start + currRange.length) >= allCards.length}" :disabled="(currRange.start + currRange.length) >= allCards.length" v-on:click="moveDisplay(currRange.start + 8)">></button>
+                        
+                        
                     </div>
                 </div>
-            </main>
+            </div>
         </div>
     </div>
 </body>

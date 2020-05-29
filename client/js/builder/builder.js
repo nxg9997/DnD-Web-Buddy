@@ -64,6 +64,9 @@ function updateCard(_canvas=null, _ctx=null, card=null, scale=1.0, callback=null
             case 'Spell':
                 bg.src = '/hosted/img/SpellCardBase.png';
                 break;
+            default:
+                bg.src = '/hosted/img/FieldCardBase.png';
+                break;
         }
         
         bg.addEventListener('load', () => {

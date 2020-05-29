@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>DnD Web Buddy</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.orange-cyan.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+
+    <link rel="stylesheet" href="/hosted/style.css">
+</head>
+<body>
+    <div id="app">
+        <div class="demo-layout-transparent mdl-layout mdl-js-layout">
+            <header class="mdl-layout__header mdl-layout__header--transparent">
+              <div class="mdl-layout__header-row">
+                <!-- Title -->
+                <span class="mdl-layout-title">{{title}}</span>
+                <!-- Add spacer, to align navigation to the right -->
+                <div class="mdl-layout-spacer"></div>
+                <!-- Navigation >
+                <nav class="mdl-navigation">
+                  <a class="mdl-navigation__link" href="">Link</a>
+                  <a class="mdl-navigation__link" href="">Link</a>
+                  <a class="mdl-navigation__link" href="">Link</a>
+                  <a class="mdl-navigation__link" href="">Link</a>
+                </nav-->
+              </div>
+            </header>
+            <div class="mdl-layout__drawer">
+              <span class="mdl-layout-title">{{title}}</span>
+              <nav class="mdl-navigation">
+                <a v-for="link in links" class="mdl-navigation__link" v-bind:href="link.href">{{link.label}}</a>
+              </nav>
+            </div>
+            <main class="mdl-layout__content">
+                <div class="mdl-grid">
+                    <div class="mdl-cell--12-col center-text">
+                        <h2>DnD - Deck Builder</h2>
+                    </div>
+                    <div class="mdl-cell--8-col black-border display-flex flex-wrap">
+                        <div v-for="c in allCards" class="deck-canvas small-margin center-text">
+                            <canvas height="100" width="100" v-on:click="addToDeck(c)">{{c.name}}</canvas>
+                        </div>
+                    </div>
+                    <div class="mdl-layout-spacer"></div>
+                    <div class="mdl-cell--3-col black-border display-flex flex-col">
+                        <button id="downBtn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent full-width" v-on:click="downloadDeck">
+                            <i class="material-icons mdl-list__item-icon">get_app</i>
+                        </button>
+                        <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="downBtn">
+                            Download Deck
+                        </div>
+                        <span class="mdl-chip mdl-chip--deletable" v-for="c in deck">
+                            <span class="mdl-chip__text">{{c}}</span>
+                            <button type="button" class="mdl-chip__action float-right translate-vert-half" v-on:click="removeFromDeck(c)"><i class="material-icons">cancel</i></button>
+                        </span>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+<script src="/hosted/FileSaver.js"></script>
+<script src="/hosted/jszip.js"></script>
+<!--script src='/hosted/deck.js'></script>
+<script src="/hosted/socket.js"></script-->
+<script src="/hosted/deckBundle.js"></script>
+</html>
