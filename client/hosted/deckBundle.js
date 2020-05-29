@@ -84,6 +84,7 @@ var app;
       },
       moveDisplay: function moveDisplay(start) {
         updateDisplay(start);
+        cardsDrawn = false;
         drawCards();
       },
       toggleOptions: function toggleOptions() {
@@ -120,6 +121,41 @@ var app;
             }
           });
         });
+      },
+      loadDeck: function loadDeck(name) {
+        fetch('/getDeck', {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            name: name
+          })
+        }).then(function (res) {
+          res.json().then(function (data) {
+            //console.log(data);
+            //app.getAllDecks();
+            app.deckName = name;
+            app.deck = data.cards;
+          });
+        });
+      },
+      deleteDeck: function deleteDeck() {
+        fetch('/deleteDeck', {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            name: app.deckName
+          })
+        }).then(function (res) {
+          res.json().then(function (data) {
+            //console.log(data);
+            //app.getAllDecks();
+            app.getAllDecks();
+          });
+        });
       }
     },
     watch: {},
@@ -136,6 +172,7 @@ var app;
     updateDisplay();
     drawCards();
   });
+  app.getAllDecks();
 })();
 
 function getAllCards() {
@@ -160,7 +197,7 @@ var cardsDrawn = false;
 function drawCards() {
   var src = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '.card-display';
   var scale = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0.35;
-  //if(false) return;
+  //if(cardsDrawn) return;
   cardsDrawn = true;
   var canvases = document.querySelectorAll(src); //console.log(canvases);
 
@@ -315,6 +352,11 @@ function updateDisplay() {
     app.cardDisplay.push(app.allCards[i]);
   }
 }
+"use strict";
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip();
+});
 "use strict";
 
 var canvas;

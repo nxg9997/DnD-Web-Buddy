@@ -1,3 +1,5 @@
+
+
 var app;
 
 (function() {
@@ -71,6 +73,7 @@ var app;
             },
             moveDisplay: (start) => {
                 updateDisplay(start);
+                cardsDrawn = false;
                 drawCards();
             },
             toggleOptions: () => {
@@ -94,7 +97,26 @@ var app;
                         }
                     });
                 });
-            }
+            },
+            loadDeck: (name) => {
+                fetch('/getDeck', {method:'POST', headers:{"Content-Type":"application/json"}, body: JSON.stringify({name:name})}).then((res)=>{
+                    res.json().then(data=>{
+                        //console.log(data);
+                        //app.getAllDecks();
+                        app.deckName = name;
+                        app.deck = data.cards;
+                    });
+                });
+            },
+            deleteDeck: () => {
+                fetch('/deleteDeck', {method:'POST', headers:{"Content-Type":"application/json"}, body: JSON.stringify({name:app.deckName})}).then((res)=>{
+                    res.json().then(data=>{
+                        //console.log(data);
+                        //app.getAllDecks();
+                        app.getAllDecks();
+                    });
+                });
+            },
         },
         watch: {
             
@@ -112,6 +134,8 @@ var app;
         updateDisplay();
         drawCards();
     });
+
+    app.getAllDecks()
 })();
 
 function getAllCards(callback=null) {

@@ -325,3 +325,8 @@ function createMultiline(str) {
 
   return arr;
 }
+"use strict";
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip();
+});

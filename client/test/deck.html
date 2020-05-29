@@ -49,31 +49,39 @@
                             </ul>
                         </div>
                         
-                        <div class="overflow-auto col-sm px-0 container row" v-bind:class="{'d-none': !optionsOpen }">
+                        <div class="col-sm pr-0 container row" v-bind:class="{'d-none': !optionsOpen }">
                             <!--Decks-->
-                            <div class="col-sm">
-                                Decks
+                            <div class="overflow-auto col-sm">
                                 <ul class="list-group list-group-horizontal text-dark">
-                                    <li class="list-group-item" v-for="d in allDecks" v-on:click="">{{d.name}}</li>
+                                    <li class="list-group-item" v-for="d in allDecks" v-on:click="loadDeck(d.name)">{{d.name}}</li>
                                 </ul>
                             </div>
-                            <div class="col-sm-5">
+                            <div class="col-sm-5 container column d-flex flex-col justify-content-center m-2">
                                 <div class="form-group row">
                                     <label for="deckName" class="col-sm-2 col-form-label">Name:</label>
-                                    <div class="col-sm-5">
+                                    <div class="col-sm">
                                         <input type="text" class="form-control" id="deckName" v-model="deckName">
                                     </div>
                                 </div>
-                                <button type="button" class="col-sm-1 btn btn-primary btn-lg btn-block float-right" v-on:click="toggleOptions">
-                                    <i class="fas fa-download"></i>
-                                </button>
+                                <div class="container row d-flex justify-content-center">
+                                    <button type="button" class="col-sm-2 btn btn-primary btn-sm mx-2" v-on:click="downloadDeck" data-toggle="tooltip" title="Download">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                    <button type="button" class="col-sm-2 btn btn-success btn-sm mx-2" v-on:click="uploadDeck" data-toggle="tooltip" title="Upload">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </button>
+                                    <button type="button" class="col-sm-2 btn btn-danger btn-sm mx-2" v-on:click="deleteDeck" data-toggle="tooltip" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                                
                             </div>
                         </div>
                         <!--div v-for="c in deck" class="col-sm">
                             <canvas class="my-2 deck-display">{{c}}</canvas>
                         </div-->
                         <button type="button" class="col-sm-1 btn btn-primary btn-lg btn-block float-right" v-on:click="toggleOptions">
-                            <i class="fas fa-cog"></i>
+                            <i class="fas fa-bars"></i>
                         </button>
                     </div>
                     <div class="container row bg-dark rounded-lg mt-2 p-0">

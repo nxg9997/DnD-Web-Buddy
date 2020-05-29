@@ -78,7 +78,7 @@ app.post('/deck', (req, res) => {
 app.post('/getDeck', (req, res) => {
     controllers.Deck.getDeckByName(req,res,(data)=>{
         //data.card.blah
-        res.send(data.card);
+        res.send(data.deck);
     });
 });
 

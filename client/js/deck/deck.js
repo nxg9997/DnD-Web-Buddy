@@ -1,7 +1,7 @@
-let cardsDrawn = false;
+var cardsDrawn = false;
 
 function drawCards(src='.card-display',scale=0.35) {
-    //if(false) return;
+    //if(cardsDrawn) return;
 
     cardsDrawn = true;
     let canvases = document.querySelectorAll(src);
