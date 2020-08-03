@@ -52,6 +52,11 @@ const CardSchema = new mongoose.Schema({
         type: Boolean,
         required: false,
         default: false,
+    },
+    mana: {
+        type: String,
+        required: false,
+        trim: true,
     }
 });
 
@@ -64,6 +69,7 @@ CardSchema.statics.toAPI = (doc) => ({
     style: doc.style,
     value: doc.value,
     evolves: doc.evolves,
+    mana: doc.mana,
 });
 
 CardSchema.statics.findByName = (name, callback) => {

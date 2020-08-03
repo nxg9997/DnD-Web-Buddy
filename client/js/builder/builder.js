@@ -22,7 +22,7 @@ function updateCard(_canvas=null, _ctx=null, card=null, scale=1.0, callback=null
     if(_canvas === null) _canvas = canvas;
     if(_ctx === null) _ctx = ctx;
     if(card === null) card = app.currentCard;
-
+    //console.log("im being drawn i think");
     _canvas.width = 409 * scale;
     _canvas.height = 585 * scale;
 
@@ -130,6 +130,9 @@ function updateCard(_canvas=null, _ctx=null, card=null, scale=1.0, callback=null
             else{
                 if(callback) callback();
             }
+
+            // - Mana
+            _ctx.fillText("Mana: " + card.mana, 300 * scale, 90 * scale);
         });
     });
     art.addEventListener('error',(err)=>{

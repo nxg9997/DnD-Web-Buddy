@@ -72,7 +72,9 @@ var app;
                 });
             },
             loadCardByName: () => {
+                console.log("attempting to laod a card");
                 fetch('/getCard', {method:'POST', headers:{"Content-Type":"application/json"}, body: JSON.stringify({name:app.currentCard.name})}).then((res)=>{
+                    console.log('got the card');
                     res.json().then(data=>{
                         //console.log(data);
                         app.currentCard = data;
@@ -82,6 +84,7 @@ var app;
             },
             loadCardByClick: (name) => {
                 app.currentCard.name = name;
+                console.log(app.currentCard);
                 app.loadCardByName();
             },
             searchForCard: () => {
@@ -106,6 +109,18 @@ var app;
                 app.currentCard.style = el;
                 updateCard();
             },
+            sendCSV: () => {
+                let csvFile = document.querySelector("#csv-file").files[0];
+                console.log(csvFile);
+                let formData = new FormData();
+
+                formData.append("csv", csvFile);
+                fetch('/csvupload', {method:'POST', body: formData}).then((res)=>{
+                    res.json().then(data=>{
+                        console.log(data);
+                    });
+                });
+            }
         },
         watch: {
             

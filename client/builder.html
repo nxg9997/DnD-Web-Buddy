@@ -40,6 +40,13 @@
             <div class="center-text">
                 <h2>Card Builder</h2>
             </div>
+            <div class="row">
+                <form enctype="multipart/form-data" action="/csvupload" method="post" id="csvForm">
+                    <input id="csv-file" type="file" />
+                    
+                </form>
+                <button id="csvBtn" v-on:click="sendCSV">Send :)</button>
+            </div>
             <div class="container text-light">
                 <div class="row">
                     <!--Section-->

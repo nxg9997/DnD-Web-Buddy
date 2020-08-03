@@ -2,7 +2,7 @@ const models = require('../Models');
 
 const { Card } = models;
 
-const create = (request, response) => {
+const create = (request, response, dontSend=false) => {
     const req = request;
     const res = response;
 
@@ -14,6 +14,7 @@ const create = (request, response) => {
     if(req.body.user) req.body.user = `${req.body.user}`;
     if(req.body.style) req.body.style = `${req.body.style}`;
     if(req.body.value) req.body.value = `${req.body.value}`;
+    if(req.body.mana) req.body.mana = `${req.body.mana}`;
 
     if(!req.body.name){
         return res.status(400).json({ error: 'Name field is required' });
@@ -30,6 +31,7 @@ const create = (request, response) => {
         user: req.body.user?req.body.user:'',
         style: req.body.style?req.body.style:'',
         value: req.body.value?req.body.value:'',
+        mana: req.body.mana?req.body.value:'0',
         evolves: req.body.evolves?req.body.evolves:false,
     };
 
@@ -38,22 +40,23 @@ const create = (request, response) => {
     const newCard = new Card.CardModel(cardData);
 
     const cardPromise = newCard.save();
-
-    cardPromise.then(() => res.json({success:'Card Added'}));
+    
+    cardPromise.then(() => {if(!dontSend) res.json({success:'Card Added'})});
 
     cardPromise.catch((err)=>{
         //console.log(err);
         if(err.code === 11000){
-            return update(req,res);
+            return update(req,res,dontSend);
         }
-        return res.status(400).json({error:'Error creating the card'});
+        if(!dontSend)
+            return res.status(400).json({error:'Error creating the card'});
     });
 
     return cardPromise;
 
 };
 
-const update = (req, res) => {
+const update = (req, res, dontSend=false) => {
     const cardData = {
         name: req.body.name,
         type: req.body.type?req.body.type:'',
@@ -66,10 +69,11 @@ const update = (req, res) => {
     };
 
     Card.CardModel.updateOne({name: cardData.name}, cardData, (err) => {
-        if(err){
+        if(err && !dontSend){
             return res.status(400).json({error:'Error editing the card'});
         }
-        return res.status(200).json({success:'Modified the card'});
+        if(!dontSend)
+            return res.status(200).json({success:'Modified the card'});
     });
 }
 

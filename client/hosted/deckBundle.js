@@ -385,7 +385,8 @@ function updateCard() {
   var callback = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
   if (_canvas === null) _canvas = canvas;
   if (_ctx === null) _ctx = ctx;
-  if (card === null) card = app.currentCard;
+  if (card === null) card = app.currentCard; //console.log("im being drawn i think");
+
   _canvas.width = 409 * scale;
   _canvas.height = 585 * scale;
   _ctx.fillStyle = 'white';
@@ -492,7 +493,10 @@ function updateCard() {
         });
       } else {
         if (callback) callback();
-      }
+      } // - Mana
+
+
+      _ctx.fillText("Mana: " + card.mana, 300 * scale, 90 * scale);
     });
   });
   art.addEventListener('error', function (err) {

@@ -84,6 +84,7 @@ var app;
         });
       },
       loadCardByName: function loadCardByName() {
+        console.log("attempting to laod a card");
         fetch('/getCard', {
           method: 'POST',
           headers: {
@@ -93,6 +94,7 @@ var app;
             name: app.currentCard.name
           })
         }).then(function (res) {
+          console.log('got the card');
           res.json().then(function (data) {
             //console.log(data);
             app.currentCard = data;
@@ -102,6 +104,7 @@ var app;
       },
       loadCardByClick: function loadCardByClick(name) {
         app.currentCard.name = name;
+        console.log(app.currentCard);
         app.loadCardByName();
       },
       searchForCard: function searchForCard() {
@@ -140,6 +143,20 @@ var app;
         console.log(el);
         app.currentCard.style = el;
         updateCard();
+      },
+      sendCSV: function sendCSV() {
+        var csvFile = document.querySelector("#csv-file").files[0];
+        console.log(csvFile);
+        var formData = new FormData();
+        formData.append("csv", csvFile);
+        fetch('/csvupload', {
+          method: 'POST',
+          body: formData
+        }).then(function (res) {
+          res.json().then(function (data) {
+            console.log(data);
+          });
+        });
       }
     },
     watch: {},
@@ -186,7 +203,8 @@ function updateCard() {
   var callback = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
   if (_canvas === null) _canvas = canvas;
   if (_ctx === null) _ctx = ctx;
-  if (card === null) card = app.currentCard;
+  if (card === null) card = app.currentCard; //console.log("im being drawn i think");
+
   _canvas.width = 409 * scale;
   _canvas.height = 585 * scale;
   _ctx.fillStyle = 'white';
@@ -293,7 +311,10 @@ function updateCard() {
         });
       } else {
         if (callback) callback();
-      }
+      } // - Mana
+
+
+      _ctx.fillText("Mana: " + card.mana, 300 * scale, 90 * scale);
     });
   });
   art.addEventListener('error', function (err) {
